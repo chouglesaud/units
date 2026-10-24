@@ -1,0 +1,1077 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Units in Motion</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+  /* Layout concept: a measurement field-guide in parts — graph-paper stages, ruler ticks,
+     one accent hue per part of the SI system, mono "readouts" like an instrument panel. */
+  :root{
+    --bg:#eaeef3;
+    --surface:#ffffff;
+    --surface-2:#f3f6fa;
+    --ink:#141d28;
+    --ink-soft:#54616f;
+    --ink-faint:#8795a3;
+    --line:#d6dde6;
+    --grid:rgba(20,29,40,0.055);
+    --shadow:0 1px 2px rgba(20,29,40,.06),0 10px 30px rgba(20,29,40,.08);
+
+    /* part hues */
+    --p-base:#2f6df0;
+    --p-space:#0fa58c;
+    --p-matter:#e2702a;
+    --p-elec:#7a5cf0;
+    --p-light:#d79b00;
+    --p-rad:#d14d93;
+    --p-info:#0bafc4;
+
+    /* illustration helpers (independent of part accent) */
+    --hot:#ef4a5a;
+    --cool:#2f6df0;
+    --leaf:#16a86b;
+    --gold:#eab308;
+
+    --accent:var(--p-base);
+    --accent-soft:color-mix(in srgb, var(--accent) 12%, transparent);
+    --accent-line:color-mix(in srgb, var(--accent) 34%, transparent);
+
+    --font-display:"Bricolage Grotesque",system-ui,sans-serif;
+    --font-body:"Hanken Grotesk",system-ui,-apple-system,sans-serif;
+    --font-mono:"Space Mono",ui-monospace,"SFMono-Regular",monospace;
+
+    --maxw:1020px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0c1118;--surface:#141b24;--surface-2:#1a232e;
+      --ink:#e9eff6;--ink-soft:#a3b1c0;--ink-faint:#6b7a8a;
+      --line:#283340;--grid:rgba(255,255,255,0.05);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 36px rgba(0,0,0,.42);
+      --p-base:#5b8dff;--p-space:#2bc3a9;--p-matter:#f08a4c;--p-elec:#9b82ff;
+      --p-light:#f0bd2e;--p-rad:#ef6cb0;--p-info:#2bc9dd;
+      --hot:#ff6472;--cool:#5b8dff;--leaf:#28c086;--gold:#f5c531;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0c1118;--surface:#141b24;--surface-2:#1a232e;
+    --ink:#e9eff6;--ink-soft:#a3b1c0;--ink-faint:#6b7a8a;
+    --line:#283340;--grid:rgba(255,255,255,0.05);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 36px rgba(0,0,0,.42);
+    --p-base:#5b8dff;--p-space:#2bc3a9;--p-matter:#f08a4c;--p-elec:#9b82ff;
+    --p-light:#f0bd2e;--p-rad:#ef6cb0;--p-info:#2bc9dd;
+    --hot:#ff6472;--cool:#5b8dff;--leaf:#28c086;--gold:#f5c531;
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--surface)}
+  @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+  h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.05;margin:0}
+  p{margin:0}
+  a{color:var(--accent);text-decoration:none}
+
+  .wrap{width:100%;max-width:var(--maxw);margin-inline:auto;
+    padding-left:max(18px,env(safe-area-inset-left,0px));
+    padding-right:max(18px,env(safe-area-inset-right,0px))}
+
+  /* top bar */
+  .topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:41;
+    background:color-mix(in srgb,var(--surface) 88%,transparent);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;gap:12px;min-height:54px;padding-block:8px}
+  .brand{font-family:var(--font-display);font-weight:800;letter-spacing:-.01em;font-size:1.05rem;display:flex;align-items:center;gap:9px}
+  .brand .mk{width:15px;height:15px;border-radius:4px;flex:none;background:conic-gradient(from 210deg,var(--p-base),var(--p-rad),var(--p-light),var(--p-space),var(--p-base))}
+  .spacer{flex:1}
+  .tb-btn{font:inherit;font-weight:600;font-size:.86rem;color:var(--ink-soft);background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;white-space:nowrap}
+  .tb-btn:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tb-icon{width:38px;height:38px;display:grid;place-items:center;padding:0}
+  .tb-icon svg{width:18px;height:18px}
+
+  /* cover */
+  .cover{padding-top:44px;padding-bottom:26px}
+  .eyebrow{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+  .cover h1{font-size:clamp(2.5rem,9vw,5rem);font-weight:800;letter-spacing:-.03em;margin:14px 0 0}
+  .cover h1 em{font-style:normal;background:linear-gradient(100deg,var(--p-base),var(--p-rad) 55%,var(--p-light));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cover .lede{font-size:clamp(1.05rem,2.6vw,1.3rem);color:var(--ink-soft);max-width:44ch;margin-top:18px}
+  .cover-stats{display:flex;gap:22px;flex-wrap:wrap;margin-top:22px}
+  .cstat{font-family:var(--font-mono)}
+  .cstat b{display:block;font-size:1.5rem;color:var(--ink);font-weight:700}
+  .cstat span{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+  .cover-ruler{margin-top:26px;height:46px;width:100%;max-width:560px;display:block}
+
+  /* contents */
+  .toc{padding-block:24px 8px}
+  .toc h2{font-family:var(--font-mono);font-weight:700;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase;font-size:.8rem}
+  .toc-part{margin-top:22px}
+  .toc-part>.pl{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--pcol);display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .toc-part>.pl::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--pcol)}
+  .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:10px}
+  .toc-card{display:flex;flex-direction:column;gap:2px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 13px;cursor:pointer;color:inherit;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+  .toc-card:hover{transform:translateY(-2px);border-color:var(--pcol);box-shadow:var(--shadow)}
+  .toc-card .nm{font-family:var(--font-display);font-weight:700;font-size:1.02rem;display:flex;align-items:center;gap:7px}
+  .toc-card .sy{font-family:var(--font-mono);font-size:.74rem;color:var(--pcol);font-weight:700}
+  .toc-card .wm{font-size:.78rem;color:var(--ink-soft)}
+  .toc-card.ref{background:var(--surface-2)}
+  .toc-card.ref .nm{font-size:.96rem}
+
+  /* part divider */
+  .part{padding-block:30px 6px;--accent:var(--pcol)}
+  .part .wrap{border-top:2px solid var(--pcol);padding-top:18px}
+  .part-k{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--pcol)}
+  .part-h{font-size:clamp(1.5rem,5vw,2.2rem);font-weight:800;letter-spacing:-.02em;margin-top:5px}
+  .part-b{color:var(--ink-soft);max-width:60ch;margin-top:8px}
+
+  /* chapter */
+  .chapter{padding-block:34px;border-top:1px dashed var(--line);scroll-margin-top:calc(70px + env(safe-area-inset-top,0px))}
+  .chapter-head{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+  .sym{font-family:var(--font-display);font-weight:800;font-size:1.3rem;min-width:58px;height:58px;padding:0 10px;border-radius:15px;display:grid;place-items:center;flex:none;color:#fff;background:var(--accent);box-shadow:0 6px 18px var(--accent-soft)}
+  .chapter-head .ht{flex:1;min-width:210px}
+  .chapter-head .ht .eyebrow{color:var(--accent)}
+  .chapter-head h2{font-size:clamp(1.7rem,5vw,2.4rem);font-weight:800;letter-spacing:-.02em;margin-top:5px}
+  .tag{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);padding:3px 9px;border-radius:999px;align-self:center;white-space:nowrap}
+
+  .chapter-body{display:grid;grid-template-columns:1fr;gap:20px;margin-top:22px}
+  @media (min-width:760px){.chapter-body{grid-template-columns:1.02fr .98fr;gap:28px;align-items:start}}
+
+  .stage{position:relative;background:
+      linear-gradient(var(--grid) 1px,transparent 1px) 0 0/22px 22px,
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/22px 22px,
+      var(--surface-2);
+    border:1px solid var(--line);border-radius:18px;padding:18px;min-width:0;overflow:hidden}
+  .stage-canvas{display:block;width:100%;border-radius:10px;min-width:0}
+  .readout{font-family:var(--font-mono);font-weight:700;letter-spacing:-.01em;font-size:clamp(1.6rem,5.2vw,2.3rem);color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+  .readout .u{color:var(--accent)}
+  .readout-sub{font-family:var(--font-mono);font-size:.8rem;color:var(--ink-soft);margin-top:5px;font-variant-numeric:tabular-nums}
+  .control{margin-top:16px}
+  .control label{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:7px}
+  input[type=range]{width:100%;accent-color:var(--accent);height:26px;cursor:pointer}
+  .ticks{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:.68rem;color:var(--ink-faint);margin-top:2px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .mini{font:inherit;font-family:var(--font-mono);font-size:.78rem;font-weight:700;background:var(--accent);color:#fff;border:none;border-radius:9px;padding:9px 14px;cursor:pointer}
+  .mini.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent-line)}
+  .mini:active{transform:translateY(1px)}
+
+  .panel>*+*{margin-top:15px}
+  .lead{font-size:1.06rem;color:var(--ink)}
+  .lead b{color:var(--accent)}
+  .def{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:13px 15px}
+  .def .dl{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+  .def .dv{margin-top:4px;color:var(--ink-soft)}
+  .def .dv strong{color:var(--ink)}
+  .feel-h{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px}
+  .anchors{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .anchor{display:flex;align-items:center;gap:10px;padding:8px 13px;font-size:.9rem;border-top:1px solid var(--line);transition:background .18s ease}
+  .anchor:first-child{border-top:none}
+  .anchor .av{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-soft);flex:none;min-width:84px;font-variant-numeric:tabular-nums}
+  .anchor .al{color:var(--ink);flex:1;min-width:0}
+  .anchor.on{background:var(--accent-soft)}
+  .anchor.on .al{font-weight:700;color:var(--accent)}
+  .anchor .pin{width:7px;height:7px;border-radius:50%;background:transparent;flex:none}
+  .anchor.on .pin{background:var(--accent)}
+  .factline{font-size:.93rem;color:var(--ink-soft)}
+  .factline b{color:var(--ink)}
+  .eqgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .eq{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .eq .ev{font-family:var(--font-mono);font-weight:700;font-size:1.1rem;color:var(--accent);font-variant-numeric:tabular-nums}
+  .eq .ek{font-size:.8rem;color:var(--ink-soft);margin-top:2px}
+  .ladder{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+  .rung{font-family:var(--font-mono);font-size:.76rem;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 9px;color:var(--ink-soft)}
+  .rung b{color:var(--ink)}
+
+  /* reference cards grid */
+  .cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:22px}
+  .ucard{scroll-margin-top:calc(70px + env(safe-area-inset-top,0px));background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:9px;--accent:var(--pcol)}
+  .ucard .uc-top{display:flex;align-items:center;gap:11px}
+  .ucard .uc-sym{width:42px;height:42px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:1.05rem;flex:none}
+  .ucard .uc-nm{font-family:var(--font-display);font-weight:700;font-size:1.1rem;line-height:1.1}
+  .ucard .uc-wm{font-size:.76rem;color:var(--ink-faint);font-family:var(--font-mono)}
+  .ucard .uc-def{font-size:.9rem;color:var(--ink);line-height:1.5}
+  .ucard .uc-from{font-family:var(--font-mono);font-size:.74rem;color:var(--ink-soft);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+  .ucard .uc-feel{font-size:.86rem;color:var(--ink-soft)}
+  .ucard .uc-feel b{color:var(--accent)}
+
+  /* prefix chapter */
+  .prefix-wrap{display:grid;gap:9px}
+  .prow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 14px}
+  .prow.cur{border-color:var(--accent);background:var(--accent-soft)}
+  .prow .pfx{font-family:var(--font-display);font-weight:700;font-size:1.02rem;min-width:84px}
+  .prow .pval{font-family:var(--font-mono);font-size:.8rem;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .prow .pex{font-size:.84rem;color:var(--ink-soft);text-align:right}
+
+  .foot{border-top:1px dashed var(--line);padding-block:30px 46px;color:var(--ink-soft);font-size:.9rem}
+  .foot .wrap>*+*{margin-top:8px}
+
+  @media (prefers-reduced-motion:reduce){.toc-card{transition:none}}
+  :focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:4px}
+</style>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="mk" aria-hidden="true"></span>Units in Motion</div>
+    <span class="spacer"></span>
+    <button class="tb-btn" id="toTop">Contents</button>
+    <button class="tb-btn tb-icon" id="themeBtn" aria-label="Switch light / dark" title="Switch theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"></path></svg>
+    </button>
+  </div>
+</div>
+
+<main>
+  <header class="cover"><div class="wrap">
+    <div class="eyebrow">The complete metric system, illustrated</div>
+    <h1>Units, <em>felt</em>.</h1>
+    <p class="lede">Every measurement in the SI system — from the metre to the sievert — turned into something you can slide, watch, and actually picture.</p>
+    <div class="cover-stats">
+      <div class="cstat"><b>7</b><span>base units</span></div>
+      <div class="cstat"><b>22</b><span>named derived units</span></div>
+      <div class="cstat"><b>34</b><span>measures in all</span></div>
+    </div>
+    <svg class="cover-ruler" viewBox="0 0 560 46" aria-hidden="true">
+      <g id="ruler-ticks"></g>
+      <rect id="ruler-sweep" x="0" y="6" width="90" height="26" rx="4" fill="var(--accent-soft)" stroke="var(--accent-line)"></rect>
+    </svg>
+  </div></header>
+
+  <section class="toc" id="contents"><div class="wrap">
+    <h2>The whole map</h2>
+    <div id="tocHost"></div>
+  </div></section>
+
+  <section class="chapter" style="--accent:var(--ink-soft);border-top:none" id="what"><div class="wrap">
+    <div class="chapter-head"><div class="ht">
+      <div class="eyebrow" style="color:var(--ink-faint)">First, the idea</div>
+      <h2>What is a unit?</h2></div></div>
+    <div class="panel" style="margin-top:20px;max-width:64ch">
+      <p class="lead">A unit is an <b style="color:var(--ink)">agreed amount we compare things to</b>. "5" means nothing on its own; "5 metres" tells everyone exactly how long, because we all share one metre.</p>
+      <p class="factline">The whole world runs on one shared system called <b>SI</b> (from the French <i>Système International</i>). It has just <b>7 base units</b> — things measured directly, like length, mass and time. Everything else is a <b>derived unit</b>: a recipe of base units. Speed is length ÷ time. A newton is kilogram·metre ÷ second². Pin down the seven, and the other two dozen fall out of them.</p>
+      <p class="factline">Below, the system is laid out in parts. Each measure gets a symbol, a plain definition, something you can play with, and a few everyday things that are "about one" of it.</p>
+    </div>
+  </div></section>
+
+  <div id="book"></div>
+
+  <footer class="foot"><div class="wrap">
+    <div class="eyebrow" style="color:var(--ink-faint)">Units in Motion</div>
+    <p>A playground for the whole metric system. Drag every slider — watching a unit move is the fastest way to learn it.</p>
+    <p style="color:var(--ink-faint)">Figures are rounded to real-world, "close enough to picture" values, not lab precision.</p>
+  </div></footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var REDUCED=false; try{ REDUCED=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+  var SVGNS='http://www.w3.org/2000/svg';
+  var root=document.documentElement;
+
+  /* theme */
+  function getStored(){try{return localStorage.getItem('uim-theme');}catch(e){return null;}}
+  function store(v){try{localStorage.setItem('uim-theme',v);}catch(e){}}
+  var saved=getStored(); if(saved==='dark'||saved==='light') root.setAttribute('data-theme',saved);
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    if(!cur) cur=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+    var next=cur==='dark'?'light':'dark'; root.setAttribute('data-theme',next); store(next);
+  });
+  document.getElementById('toTop').addEventListener('click',function(){
+    document.getElementById('contents').scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
+  });
+
+  /* ticker */
+  var anims=[], lastT=performance.now();
+  function frame(now){var dt=(now-lastT)/1000;lastT=now;if(dt>0.06)dt=0.06;var ts=now/1000;
+    for(var i=0;i<anims.length;i++){var a=anims[i];if(a.visible)a.fn(dt,ts);}requestAnimationFrame(frame);}
+  requestAnimationFrame(frame);
+  function register(el,fn){var o={fn:fn,visible:true};anims.push(o);
+    try{var io=new IntersectionObserver(function(e){o.visible=e[0].isIntersecting;},{rootMargin:'140px'});io.observe(el);}catch(e){}return o;}
+
+  /* canvas */
+  function Canvas(cv){var self=this;this.cv=cv;this.ctx=cv.getContext('2d');
+    function fit(){var r=cv.getBoundingClientRect();var dpr=Math.min(2,window.devicePixelRatio||1);
+      cv.width=Math.max(1,Math.round(r.width*dpr));cv.height=Math.max(1,Math.round(r.height*dpr));
+      self.w=r.width;self.h=r.height;self.ctx.setTransform(dpr,0,0,dpr,0,0);}
+    fit();try{new ResizeObserver(fit).observe(cv);}catch(e){window.addEventListener('resize',fit);} }
+
+  /* helpers */
+  function clamp(v,a,b){return v<a?a:(v>b?b:v);}
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function logScale(s,min,max){return Math.exp(lerp(Math.log(min),Math.log(max),s));}
+  function invLog(v,min,max){return (Math.log(v)-Math.log(min))/(Math.log(max)-Math.log(min));}
+  function commas(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");}
+  function sig(n,d){d=d||3;if(n===0)return '0';var r=Number(n.toPrecision(d));
+    if(Math.abs(r)>=1000)return commas(Math.round(r));return String(r);}
+  function sup(x){var m={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻','+':''};
+    return String(x).replace(/[-+0-9]/g,function(c){return m[c];});}
+  function expFmt(n){if(n===0)return '0';var e=Math.floor(Math.log10(Math.abs(n)));var m=n/Math.pow(10,e);
+    return m.toFixed(2)+' × 10'+sup(e);}
+  function cssVar(el,name){return getComputedStyle(el).getPropertyValue(name).trim();}
+
+  function fmtLength(m){if(m<0.01)return{v:sig(m*1000),u:'mm'};if(m<1)return{v:sig(m*100),u:'cm'};if(m<1000)return{v:sig(m),u:'m'};return{v:sig(m/1000),u:'km'};}
+  function fmtArea(a){if(a<1)return{v:sig(a*1e4),u:'cm²'};if(a<1e4)return{v:sig(a),u:'m²'};if(a<1e6)return{v:sig(a/1e4),u:'hectares'};return{v:sig(a/1e6),u:'km²'};}
+  function fmtVol(l){if(l<1)return{v:sig(l*1000),u:'mL'};if(l<1000)return{v:sig(l),u:'L'};return{v:sig(l/1000),u:'m³'};}
+  function fmtMass(g){if(g<1000)return{v:sig(g),u:'g'};if(g<1e6)return{v:sig(g/1000),u:'kg'};return{v:sig(g/1e6),u:'tonnes'};}
+  function fmtData(b){if(b<1024)return{v:sig(b),u:'B'};if(b<1048576)return{v:sig(b/1024),u:'KB'};if(b<1073741824)return{v:sig(b/1048576),u:'MB'};if(b<1.0995e12)return{v:sig(b/1073741824),u:'GB'};return{v:sig(b/1.0995e12),u:'TB'};}
+  function fmtEnergy(j){if(j<1000)return{v:sig(j),u:'J'};if(j<1e6)return{v:sig(j/1000),u:'kJ'};return{v:sig(j/1e6),u:'MJ'};}
+  function fmtAmp(a){if(a<1)return{v:sig(a*1000),u:'mA'};if(a<1000)return{v:sig(a),u:'A'};return{v:sig(a/1000),u:'kA'};}
+  function fmtVolt(v){if(v<1000)return{v:sig(v),u:'V'};if(v<1e6)return{v:sig(v/1000),u:'kV'};return{v:sig(v/1e6),u:'MV'};}
+  function fmtOhm(o){if(o<1000)return{v:sig(o),u:'Ω'};if(o<1e6)return{v:sig(o/1000),u:'kΩ'};return{v:sig(o/1e6),u:'MΩ'};}
+  function fmtForce(n){if(n<1000)return{v:sig(n),u:'N'};return{v:sig(n/1000),u:'kN'};}
+  function fmtPr(p){if(p<1000)return{v:sig(p),u:'Pa'};if(p<1e5)return{v:sig(p/1000),u:'kPa'};return{v:sig(p/1e5),u:'bar'};}
+
+  function nearestLog(c,v){var ns=c.querySelectorAll('.anchor'),b=null,bd=Infinity;
+    ns.forEach(function(n){var x=parseFloat(n.getAttribute('data-v'));var d=Math.abs(Math.log(x)-Math.log(v));if(d<bd){bd=d;b=n;}});
+    ns.forEach(function(n){n.classList.toggle('on',n===b);});}
+  function nearestLin(c,v){var ns=c.querySelectorAll('.anchor'),b=null,bd=Infinity;
+    ns.forEach(function(n){var x=parseFloat(n.getAttribute('data-v'));var d=Math.abs(x-v);if(d<bd){bd=d;b=n;}});
+    ns.forEach(function(n){n.classList.toggle('on',n===b);});}
+
+  function anchorList(items){return '<div class="anchors">'+items.map(function(it){
+    return '<div class="anchor" data-v="'+it.v+'"><span class="pin"></span><span class="av">'+it.d+'</span><span class="al">'+it.l+'</span></div>';}).join('')+'</div>';}
+  function feel(items,head){return '<div><div class="feel-h">'+(head||'Feel it — about one of these')+'</div>'+anchorList(items)+'</div>';}
+  function def(dl,dv){return '<div class="def"><div class="dl">'+dl+'</div><div class="dv">'+dv+'</div></div>';}
+
+  function section(c,stage,panel){
+    var s=document.createElement('section');s.className='chapter';s.id=c.id;s.setAttribute('data-num','');
+    s.style.setProperty('--accent','var('+c.cc+')');
+    s.innerHTML='<div class="wrap"><div class="chapter-head"><div class="sym">'+c.sym+'</div>'+
+      '<div class="ht"><div class="eyebrow ch-num"></div><h2>'+c.name+'</h2></div>'+
+      '<span class="tag">'+c.tag+'</span></div>'+
+      '<div class="chapter-body"><div class="stage">'+stage+'</div><div class="panel">'+panel+'</div></div></div>';
+    return s;
+  }
+
+  /* ============ META ============ */
+  var META={
+    length:{sym:'m',name:'Length',cc:'--p-base',tag:'SI base unit',wm:'How far / how long'},
+    mass:{sym:'kg',name:'Mass',cc:'--p-base',tag:'SI base unit',wm:'How heavy'},
+    time:{sym:'s',name:'Time',cc:'--p-base',tag:'SI base unit',wm:'How long it lasts'},
+    current:{sym:'A',name:'Electric current',cc:'--p-base',tag:'SI base unit',wm:'Flow of electricity'},
+    temp:{sym:'K',name:'Temperature',cc:'--p-base',tag:'SI base unit',wm:'How hot or cold'},
+    mole:{sym:'mol',name:'Amount of substance',cc:'--p-base',tag:'SI base unit',wm:'How many particles'},
+    candela:{sym:'cd',name:'Luminous intensity',cc:'--p-base',tag:'SI base unit',wm:'Brightness of a source'},
+
+    area:{sym:'m²',name:'Area',cc:'--p-space',tag:'Derived',wm:'How much surface'},
+    volume:{sym:'m³',name:'Volume',cc:'--p-space',tag:'Derived',wm:'How much space'},
+    angle:{sym:'rad',name:'Angle',cc:'--p-space',tag:'Derived · radian',wm:'How much turn'},
+    solidangle:{sym:'sr',name:'Solid angle',cc:'--p-space',tag:'Derived · steradian',wm:'Turn in 3D'},
+    speed:{sym:'m/s',name:'Speed',cc:'--p-space',tag:'Derived',wm:'How fast'},
+    accel:{sym:'m/s²',name:'Acceleration',cc:'--p-space',tag:'Derived',wm:'How fast speed changes'},
+    freq:{sym:'Hz',name:'Frequency',cc:'--p-space',tag:'Derived · hertz',wm:'How often per second'},
+
+    force:{sym:'N',name:'Force',cc:'--p-matter',tag:'Derived · newton',wm:'A push or pull'},
+    pressure:{sym:'Pa',name:'Pressure',cc:'--p-matter',tag:'Derived · pascal',wm:'Force over area'},
+    density:{sym:'ρ',name:'Density',cc:'--p-matter',tag:'Derived',wm:'Mass packed in space'},
+    energy:{sym:'J',name:'Energy',cc:'--p-matter',tag:'Derived · joule',wm:'Capacity to do work'},
+    power:{sym:'W',name:'Power',cc:'--p-matter',tag:'Derived · watt',wm:'Energy per second'},
+
+    voltage:{sym:'V',name:'Voltage',cc:'--p-elec',tag:'Derived · volt',wm:'Electrical push'},
+    resistance:{sym:'Ω',name:'Resistance',cc:'--p-elec',tag:'Derived · ohm',wm:'Opposition to flow'},
+    charge:{sym:'C',name:'Electric charge',cc:'--p-elec',tag:'Derived · coulomb',wm:'Quantity of electricity'},
+    conductance:{sym:'S',name:'Conductance',cc:'--p-elec',tag:'Derived · siemens',wm:'Ease of flow'},
+    capacitance:{sym:'F',name:'Capacitance',cc:'--p-elec',tag:'Derived · farad',wm:'Charge stored per volt'},
+    magflux:{sym:'Wb',name:'Magnetic flux',cc:'--p-elec',tag:'Derived · weber',wm:'Total magnetism'},
+    magfield:{sym:'T',name:'Magnetic field',cc:'--p-elec',tag:'Derived · tesla',wm:'Strength of a field'},
+    inductance:{sym:'H',name:'Inductance',cc:'--p-elec',tag:'Derived · henry',wm:'Resistance to current change'},
+
+    lumen:{sym:'lm',name:'Luminous flux',cc:'--p-light',tag:'Derived · lumen',wm:'Total light output'},
+    lux:{sym:'lx',name:'Illuminance',cc:'--p-light',tag:'Derived · lux',wm:'Light landing on a surface'},
+
+    becquerel:{sym:'Bq',name:'Radioactivity',cc:'--p-rad',tag:'Derived · becquerel',wm:'Decays per second'},
+    gray:{sym:'Gy',name:'Absorbed dose',cc:'--p-rad',tag:'Derived · gray',wm:'Radiation energy absorbed'},
+    sievert:{sym:'Sv',name:'Dose equivalent',cc:'--p-rad',tag:'Derived · sievert',wm:'Radiation harm to you'},
+    katal:{sym:'kat',name:'Catalytic activity',cc:'--p-rad',tag:'Derived · katal',wm:'Reaction speed'},
+
+    data:{sym:'B',name:'Data',cc:'--p-info',tag:'Digital',wm:'Amount of information'}
+  };
+
+  /* ============ BOOK structure ============ */
+  var BOOK=[
+    {k:'base',col:'--p-base',name:'The seven base units',
+      blurb:'Measured directly, not built from anything else. Every other unit in the system is some combination of these seven.',
+      deep:['length','mass','time','current','temp','mole','candela'],cards:[]},
+    {k:'space',col:'--p-space',name:'Space & motion',
+      blurb:'Stretch length into two and three dimensions, add time, and you get everything about shape, size and movement.',
+      deep:['area','volume','angle','speed','accel','freq'],cards:['solidangle']},
+    {k:'matter',col:'--p-matter',name:'Force, energy & matter',
+      blurb:'What it takes to push, lift, squeeze and heat the physical world.',
+      deep:['force','pressure','density','energy','power'],cards:[]},
+    {k:'elec',col:'--p-elec',name:'Electricity & magnetism',
+      blurb:'The current is a base unit; the rest describe the push behind it, what resists it, and the magnetism it creates.',
+      deep:['voltage','resistance'],cards:['charge','conductance','capacitance','magflux','magfield','inductance']},
+    {k:'light',col:'--p-light',name:'Light',
+      blurb:'The source\'s brightness is the base unit (candela). These two measure the light it sends out and where it lands.',
+      deep:['lumen','lux'],cards:[]},
+    {k:'rad',col:'--p-rad',name:'Radiation & chemistry',
+      blurb:'The quieter corner of the system — units for nuclear decay, radiation dose and chemical reactions.',
+      deep:[],cards:['becquerel','gray','sievert','katal']},
+    {k:'info',col:'--p-info',name:'Information',
+      blurb:'Not part of SI, but the one unit the digital world is built on.',
+      deep:['data'],cards:[]}
+  ];
+
+  /* ============ interactive builders ============ */
+  var B={};
+
+  B.length=function(c){
+    var refs=[{v:0.002,d:'2 mm',l:'a grain of rice'},{v:0.023,d:'2.3 cm',l:'a ₹5 coin'},{v:0.3,d:'30 cm',l:'a school ruler'},{v:1,d:'1 m',l:'one big step'},{v:2,d:'2 m',l:'a doorway'},{v:12,d:'12 m',l:'a city bus'},{v:100,d:'100 m',l:'a football pitch'},{v:1000,d:'1 km',l:'a 12-minute walk'},{v:8849,d:'8.8 km',l:'Mount Everest'}];
+    var stage='<svg viewBox="0 0 440 150" class="stage-canvas" style="height:auto;aspect-ratio:440/150"><g class="ticks-g"></g>'+
+      '<line x1="20" y1="96" x2="420" y2="96" stroke="var(--line)" stroke-width="2"/>'+
+      '<g class="mk"><line x1="20" y1="60" x2="20" y2="110" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/><circle cx="20" cy="60" r="6" fill="var(--accent)"/></g>'+
+      '<text class="obj" x="220" y="36" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="17" fill="var(--ink)"></text></svg>'+
+      '<div style="margin-top:14px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>Zoom from a grain of rice to a mountain</label><input type="range" class="sl" min="0" max="1000" value="460"></div>'+
+      '<div class="ticks"><span>1 mm</span><span>10 km</span></div>';
+    var panel='<p class="lead">Length is just <b>how far apart two points are</b>. The base unit is the <b>metre</b> — about one long stride.</p>'+
+      def('The unit · metre (m)','Everything else is the metre with a prefix: a <strong>millimetre</strong> is a thousandth, a <strong>kilometre</strong> a thousand.')+
+      feel(refs)+'<div class="ladder"><span class="rung"><b>mm</b> ÷1000</span><span class="rung"><b>cm</b> ÷100</span><span class="rung"><b>m</b> ×1</span><span class="rung"><b>km</b> ×1000</span></div>';
+    var s=section(c,stage,panel),svg=s.querySelector('svg'),g=s.querySelector('.ticks-g'),mk=s.querySelector('.mk'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),obj=s.querySelector('.obj'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    for(var i=0;i<=20;i++){var x=20+i*20,t=(i%5===0);var ln=document.createElementNS(SVGNS,'line');ln.setAttribute('x1',x);ln.setAttribute('x2',x);ln.setAttribute('y1',t?86:90);ln.setAttribute('y2',102);ln.setAttribute('stroke','var(--ink-faint)');ln.setAttribute('stroke-width',t?1.4:0.8);ln.setAttribute('opacity','0.5');g.appendChild(ln);}
+    var MIN=0.001,MAX=10000,curX=20,tgtX=20;
+    function up(){var m=logScale(sl.value/1000,MIN,MAX),f=fmtLength(m);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      var ft=m/0.3048;sub.textContent=ft>=3?('≈ '+sig(ft)+' feet'):('≈ '+sig(m/0.0254)+' inches');
+      nearestLog(an,m);var on=an.querySelector('.anchor.on');obj.textContent=on?on.querySelector('.al').textContent:'';tgtX=20+(sl.value/1000)*400;}
+    sl.addEventListener('input',up);up();
+    if(REDUCED){curX=tgtX;mk.setAttribute('transform','translate('+(curX-20)+',0)');}
+    else register(svg,function(){curX+=(tgtX-curX)*0.18;mk.setAttribute('transform','translate('+(curX-20)+',0)');});
+    return s;
+  };
+
+  B.mass=function(c){
+    var refs=[{v:0.03,d:'0.03 g',l:'a feather'},{v:1,d:'1 g',l:'a paperclip'},{v:170,d:'170 g',l:'a smartphone'},{v:1000,d:'1 kg',l:'a litre of water'},{v:4000,d:'4 kg',l:'a house cat'},{v:70000,d:'70 kg',l:'an adult person'},{v:1.4e6,d:'1.4 t',l:'a small car'}];
+    var stage='<svg viewBox="0 0 440 180" class="stage-canvas" style="height:auto;aspect-ratio:440/180">'+
+      '<line x1="220" y1="26" x2="220" y2="150" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/><polygon points="206,150 234,150 220,168" fill="var(--ink-faint)"/>'+
+      '<g class="beam"><line x1="90" y1="40" x2="350" y2="40" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>'+
+      '<g><line x1="110" y1="40" x2="110" y2="72" stroke="var(--ink-faint)" stroke-width="1.5"/><rect x="78" y="72" width="64" height="30" rx="7" fill="var(--accent)"/><text x="110" y="92" text-anchor="middle" font-family="var(--font-mono)" font-size="11" font-weight="700" fill="#fff">this</text></g>'+
+      '<g><line x1="330" y1="40" x2="330" y2="72" stroke="var(--ink-faint)" stroke-width="1.5"/><rect x="302" y="72" width="56" height="30" rx="7" fill="none" stroke="var(--ink-faint)" stroke-width="1.6"/><text x="330" y="92" text-anchor="middle" font-family="var(--font-mono)" font-size="11" font-weight="700" fill="var(--ink-soft)">1 kg</text></g></g></svg>'+
+      '<div style="margin-top:10px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>From a feather to a small car</label><input type="range" class="sl" min="0" max="1000" value="500"></div>'+
+      '<div class="ticks"><span>0.1 g</span><span>2 tonnes</span></div>';
+    var panel='<p class="lead">Mass is <b>how much "stuff" is in something</b> — how hard it is to push or lift. The base unit is the <b>kilogram</b>: a full one-litre water bottle.</p>'+
+      def('The unit · kilogram (kg)','The only base unit with a prefix baked into its name. A <strong>gram</strong> is a thousandth (a paperclip); a <strong>tonne</strong> is a thousand kg.')+
+      feel(refs)+'<p class="factline"><b>Weight vs mass:</b> mass is the same everywhere; weight is gravity pulling on it. On the Moon your mass is unchanged but you weigh a sixth as much.</p>';
+    var s=section(c,stage,panel),svg=s.querySelector('svg'),beam=s.querySelector('.beam'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=0.1,MAX=2e6,tgt=0,cur=0;
+    function up(){var g=logScale(sl.value/1000,MIN,MAX),f=fmtMass(g);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      var lb=g/453.6;sub.textContent='≈ '+(lb<1?sig(g/28.35)+' ounces':sig(lb)+' pounds');nearestLog(an,g);tgt=clamp(Math.tanh(0.42*Math.log(g/1000)),-1,1)*15;}
+    sl.addEventListener('input',up);up();
+    if(REDUCED){cur=tgt;beam.setAttribute('transform','rotate('+cur+' 220 40)');}
+    else register(svg,function(){cur+=(tgt-cur)*0.12;beam.setAttribute('transform','rotate('+cur+' 220 40)');});
+    return s;
+  };
+
+  B.time=function(c){
+    var stage='<svg viewBox="0 0 440 180" class="stage-canvas" style="height:auto;aspect-ratio:440/180">'+
+      '<line x1="220" y1="20" x2="220" y2="34" stroke="var(--line)" stroke-width="3"/>'+
+      '<g class="pend"><line x1="220" y1="26" x2="220" y2="128" stroke="var(--ink-faint)" stroke-width="3"/><circle cx="220" cy="134" r="16" fill="var(--accent)"/></g>'+
+      '<circle cx="220" cy="26" r="5" fill="var(--ink-soft)"/>'+
+      '<circle class="beat" cx="390" cy="40" r="10" fill="var(--accent)" opacity="0.25"/>'+
+      '<text x="390" y="72" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-faint)">each beat<tspan x="390" dy="12">= 1 second</tspan></text></svg>'+
+      '<div style="margin-top:8px"><span class="readout rd">0<span class="u"> s</span></span></div><div class="readout-sub">seconds since you opened this page</div>'+
+      '<div class="btnrow"><button class="mini feel">Tap to feel one second</button><button class="mini ghost rst">Reset</button></div>'+
+      '<div style="margin-top:12px;height:8px;border-radius:999px;background:var(--line);overflow:hidden"><div class="bar" style="height:100%;width:0;background:var(--accent)"></div></div>';
+    var panel='<p class="lead">Time is <b>how long things last</b>, and its base unit is the <b>second</b> — about one relaxed heartbeat.</p>'+
+      def('The unit · second (s)','Daily life doesn\'t use ×1000 prefixes here; we count in 60s: <strong>60 s = 1 min</strong>, <strong>60 min = 1 hour</strong>, <strong>24 h = 1 day</strong>.')+
+      '<div><div class="feel-h">In a single second…</div><div class="anchors">'+
+      '<div class="anchor"><span class="pin" style="background:var(--accent)"></span><span class="av">7.5×</span><span class="al">light could loop around the Earth</span></div>'+
+      '<div class="anchor"><span class="pin" style="background:var(--accent)"></span><span class="av">~50</span><span class="al">wingbeats of a hummingbird</span></div>'+
+      '<div class="anchor"><span class="pin" style="background:var(--accent)"></span><span class="av">~1</span><span class="al">beat of a calm human heart</span></div></div></div>'+
+      '<div class="ladder"><span class="rung"><b>1 min</b> = 60 s</span><span class="rung"><b>1 hr</b> = 3,600 s</span><span class="rung"><b>1 day</b> = 86,400 s</span><span class="rung"><b>1 yr</b> ≈ 31.5M s</span></div>';
+    var s=section(c,stage,panel),pend=s.querySelector('.pend'),beat=s.querySelector('.beat'),rd=s.querySelector('.rd'),bar=s.querySelector('.bar'),svg=s.querySelector('svg');
+    var start=performance.now()/1000,feelUntil=0;
+    s.querySelector('.rst').addEventListener('click',function(){start=performance.now()/1000;});
+    s.querySelector('.feel').addEventListener('click',function(){feelUntil=performance.now()/1000+1;});
+    if(REDUCED){pend.setAttribute('transform','rotate(16 220 26)');
+      setInterval(function(){rd.innerHTML=Math.floor(performance.now()/1000-start)+'<span class="u"> s</span>';},500);
+      s.querySelector('.feel').addEventListener('click',function(){bar.style.transition='width 1s linear';bar.style.width='100%';setTimeout(function(){bar.style.transition='none';bar.style.width='0';},1050);});
+    } else register(svg,function(dt,ts){
+      rd.innerHTML=Math.floor(ts-start)+'<span class="u"> s</span>';
+      pend.setAttribute('transform','rotate('+(22*Math.cos(Math.PI*ts))+' 220 26)');
+      var ph=Math.abs(Math.sin(Math.PI*ts));beat.setAttribute('opacity',(0.9-0.65*ph).toFixed(3));beat.setAttribute('r',(8+5*(1-ph)).toFixed(1));
+      var left=feelUntil-ts;bar.style.width=(left>0?(1-left)*100:0)+'%';});
+    return s;
+  };
+
+  B.current=function(c){
+    var refs=[{v:0.02,d:'0.02 A',l:'a glowing LED'},{v:0.5,d:'0.5 A',l:'a laptop over USB'},{v:2,d:'2 A',l:'a fast phone charger'},{v:9,d:'9 A',l:'an electric kettle'},{v:100,d:'100 A',l:'a car\'s starter motor'},{v:30000,d:'30 kA',l:'a lightning strike'}];
+    var stage='<canvas class="stage-canvas cv" style="height:120px"></canvas>'+
+      '<div style="margin-top:10px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>Turn up the flow of charge</label><input type="range" class="sl" min="0" max="1000" value="470"></div>'+
+      '<div class="ticks"><span>1 mA</span><span>30 kA</span></div>';
+    var panel='<p class="lead">Current is <b>how much electric charge flows past a point each second</b> — like water through a pipe, but electrons through a wire. The unit is the <b>ampere</b>.</p>'+
+      def('The unit · ampere (A)','One of the seven base units. <strong>1 amp = 1 coulomb of charge every second</strong>. It\'s the "how much is flowing" of electricity.')+
+      feel(refs)+'<p class="factline">Current needs a push (<b>voltage</b>) and meets opposition (<b>resistance</b>) — the three are tied together by Ohm\'s law in the next part.</p>';
+    var s=section(c,stage,panel),cv=s.querySelector('.cv'),CV=new Canvas(cv),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=0.001,MAX=30000,A=1,N=26,dots=[];for(var i=0;i<N;i++)dots.push(Math.random());
+    function up(){A=logScale(sl.value/1000,MIN,MAX);var f=fmtAmp(A);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      sub.textContent='= '+expFmt(A*6.242e18)+' electrons per second';nearestLog(an,A);}
+    sl.addEventListener('input',up);up();
+    function draw(dt){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var y=h/2,col=cssVar(s,'--accent');
+      ctx.strokeStyle=cssVar(s,'--line');ctx.lineWidth=14;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(14,y);ctx.lineTo(w-14,y);ctx.stroke();
+      var spd=clamp(invLog(A,MIN,MAX),0.03,1);ctx.fillStyle=col;
+      for(var i=0;i<N;i++){if(!REDUCED)dots[i]+=spd*dt*0.9;if(dots[i]>1)dots[i]-=1;var x=16+dots[i]*(w-32);ctx.globalAlpha=0.9;ctx.beginPath();ctx.arc(x,y,4,0,6.2832);ctx.fill();}
+      ctx.globalAlpha=1;ctx.fillStyle=cssVar(s,'--ink-faint');ctx.font='11px "Space Mono",monospace';ctx.fillText('flow →',16,y-16);}
+    if(REDUCED){up();draw(0);sl.addEventListener('input',function(){draw(0);});}else register(cv,draw);
+    return s;
+  };
+
+  B.temp=function(c){
+    var refs=[{v:-18,d:'−18 °C',l:'a home freezer'},{v:0,d:'0 °C',l:'ice melts'},{v:4,d:'4 °C',l:'inside a fridge'},{v:22,d:'22 °C',l:'a comfy room'},{v:37,d:'37 °C',l:'human body'},{v:45,d:'45 °C',l:'a heatwave'},{v:100,d:'100 °C',l:'water boils'}];
+    var stage='<div style="display:flex;gap:16px;align-items:stretch"><svg viewBox="0 0 60 220" width="54" style="flex:none">'+
+      '<rect x="22" y="12" width="16" height="168" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>'+
+      '<circle cx="30" cy="190" r="17" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>'+
+      '<rect class="fill" x="26" y="100" width="8" height="80"/><circle cx="30" cy="190" r="12" class="bulb"/><g class="tm"></g></svg>'+
+      '<canvas class="stage-canvas cv" style="flex:1;height:200px;min-width:0"></canvas></div>'+
+      '<div style="margin-top:12px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span class="readout rd"></span><span class="readout-sub sub" style="margin:0"></span></div>'+
+      '<div class="control"><label>Cool it down, heat it up — watch the particles</label><input type="range" class="sl" min="-20" max="120" value="22"></div>'+
+      '<div class="ticks"><span>−20 °C</span><span>120 °C</span></div>';
+    var panel='<p class="lead">Temperature measures <b>how fast the particles inside something are jiggling</b>. Hotter = faster. We read it in <b>degrees Celsius</b>.</p>'+
+      def('The unit · kelvin (K) &amp; °C','Science\'s base unit is the <strong>kelvin</strong>, starting at <strong>absolute zero</strong> — the coldest possible, where jiggling stops (0 K = −273 °C). The step size is identical, so <strong>K = °C + 273</strong>.')+
+      feel(refs)+'<p class="factline">There\'s no ceiling on heat, but there <b>is</b> a floor: nothing is colder than absolute zero.</p>';
+    var s=section(c,stage,panel),fill=s.querySelector('.fill'),bulb=s.querySelector('.bulb'),tm=s.querySelector('.tm'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors'),cv=s.querySelector('.cv'),CV=new Canvas(cv);
+    [-20,0,37,100,120].forEach(function(t){var y=176-((t+20)/140)*164;var l=document.createElementNS(SVGNS,'line');l.setAttribute('x1',10);l.setAttribute('x2',20);l.setAttribute('y1',y);l.setAttribute('y2',y);l.setAttribute('stroke','var(--ink-faint)');l.setAttribute('stroke-width','1');l.setAttribute('opacity','0.6');tm.appendChild(l);});
+    var N=34,ps=[];for(var i=0;i<N;i++)ps.push({x:Math.random(),y:Math.random(),vx:Math.random()-0.5,vy:Math.random()-0.5});
+    var speed=1,col='#888';
+    function hot(t){var f=clamp((t+20)/140,0,1);return 'rgb('+Math.round(lerp(60,238,f))+','+Math.round(lerp(120,74,f))+','+Math.round(lerp(236,80,f))+')';}
+    function up(){var t=parseFloat(sl.value);col=hot(t);rd.innerHTML=sig(t)+'<span class="u" style="color:'+col+'"> °C</span>';
+      sub.textContent=sig(t*9/5+32)+' °F  ·  '+sig(t+273.15,4)+' K';var y=176-((t+20)/140)*164;fill.setAttribute('y',y);fill.setAttribute('height',Math.max(0,180-y));fill.setAttribute('fill',col);bulb.setAttribute('fill',col);
+      speed=Math.sqrt(Math.max(1,t+273.15))/Math.sqrt(295);nearestLin(an,t);}
+    sl.addEventListener('input',up);up();
+    function draw(dt){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var pad=10,bw=w-pad*2,bh=h-pad*2;
+      ctx.strokeStyle=cssVar(s,'--line');ctx.lineWidth=1;ctx.strokeRect(pad+0.5,pad+0.5,bw-1,bh-1);var v=speed*(REDUCED?0:1);ctx.fillStyle=col;
+      for(var i=0;i<N;i++){var p=ps[i];p.x+=p.vx*v*dt*2.2;p.y+=p.vy*v*dt*2.2;
+        if(p.x<0){p.x=0;p.vx=Math.abs(p.vx);}if(p.x>1){p.x=1;p.vx=-Math.abs(p.vx);}if(p.y<0){p.y=0;p.vy=Math.abs(p.vy);}if(p.y>1){p.y=1;p.vy=-Math.abs(p.vy);}
+        var px=pad+4+p.x*(bw-8),py=pad+4+p.y*(bh-8);ctx.beginPath();ctx.arc(px,py,4,0,6.2832);ctx.fill();
+        if(!REDUCED&&v>0.4){ctx.globalAlpha=0.18;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px-p.vx*v*10,py-p.vy*v*10);ctx.strokeStyle=col;ctx.lineWidth=3;ctx.stroke();ctx.globalAlpha=1;}}}
+    if(REDUCED){up();draw(0.016);sl.addEventListener('input',function(){draw(0.016);});}else register(cv,draw);
+    return s;
+  };
+
+  B.mole=function(c){
+    var NA=6.022e23;
+    var stage='<svg viewBox="0 0 440 190" class="stage-canvas" style="height:auto;aspect-ratio:440/190">'+
+      '<path d="M150 20 L150 70 L120 160 Q118 172 132 172 L308 172 Q322 172 320 160 L290 70 L290 20 Z" fill="none" stroke="var(--line)" stroke-width="2.5"/>'+
+      '<clipPath id="flaskClip"><path d="M150 22 L150 70 L121 158 Q120 168 131 168 L309 168 Q320 168 319 158 L290 70 L290 22 Z"/></clipPath>'+
+      '<g clip-path="url(#flaskClip)"><rect class="liq" x="110" y="120" width="220" height="60" fill="var(--accent)" opacity="0.8"/></g>'+
+      '<rect x="146" y="14" width="148" height="10" rx="4" fill="var(--ink-faint)"/></svg>'+
+      '<div style="margin-top:8px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>How many moles of water?</label><input type="range" class="sl" min="0" max="1000" value="500"></div>'+
+      '<div class="ticks"><span>0.01 mol</span><span>1000 mol</span></div>';
+    var panel='<p class="lead">A mole is <b>a counting word for a fixed, enormous number of particles</b> — like "a dozen" means 12, but a mole means 602 sextillion. It\'s how chemists count atoms.</p>'+
+      def('The unit · mole (mol)','One mole = <strong>6.022 × 10²³</strong> particles (Avogadro\'s number). Conveniently, one mole of water weighs about 18 g — roughly a tablespoon.')+
+      '<div><div class="feel-h">What a mole gives you</div><div class="eqgrid eq"></div></div>'+
+      '<p class="factline">A mole of marbles would bury the whole Earth about <b>80 km deep</b>. Atoms are small enough that a spoonful of water holds trillions of moles\' worth of… no — holds a couple of moles. That\'s how tiny they are.</p>';
+    var s=section(c,stage,panel),liq=s.querySelector('.liq'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),eq=s.querySelector('.eq');
+    var MIN=0.01,MAX=1000;
+    function up(){var mol=logScale(sl.value/1000,MIN,MAX);rd.innerHTML=sig(mol)+'<span class="u"> mol</span>';
+      sub.textContent='of water ≈ '+fmtVol(mol*0.018*1000/1000).v+' '+fmtVol(mol*0.018).u;
+      var grams=mol*18;sub.textContent='water: '+(grams<1000?sig(grams)+' g':sig(grams/1000)+' kg')+'  ·  '+sig(mol*18)+' mL';
+      eq.innerHTML='<div class="eq"><div class="ev">'+expFmt(mol*NA)+'</div><div class="ek">particles</div></div>'+
+        '<div class="eq"><div class="ev">'+(mol*18<1000?sig(mol*18)+' g':sig(mol*18/1000)+' kg')+'</div><div class="ek">of water</div></div>';
+      var top=168-clamp(invLog(mol,MIN,MAX),0,1)*146;liq.setAttribute('y',top);liq.setAttribute('height',180-top);}
+    sl.addEventListener('input',up);up();
+    return s;
+  };
+
+  B.candela=function(c){
+    var refs=[{v:1,d:'1 cd',l:'a single candle'},{v:15,d:'15 cd',l:'a bright phone screen'},{v:100,d:'100 cd',l:'a pocket torch'},{v:10000,d:'10 kcd',l:'a car headlight'},{v:2e6,d:'2 Mcd',l:'a lighthouse beam'}];
+    var stage='<canvas class="stage-canvas cv" style="height:150px"></canvas>'+
+      '<div style="margin-top:10px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>Dim a candle up to a lighthouse</label><input type="range" class="sl" min="0" max="1000" value="330"></div>'+
+      '<div class="ticks"><span>0.1 cd</span><span>2 Mcd</span></div>';
+    var panel='<p class="lead">Luminous intensity is <b>how much light a source throws in one direction</b>. A plain candle is almost exactly one <b>candela</b> — which is where the name comes from.</p>'+
+      def('The unit · candela (cd)','A base unit, tuned to human eyes: it weights light by how bright it <em>looks</em> to us, not raw energy. Focus a beam (a torch, a lighthouse) and the candela in that direction shoots up.')+
+      feel(refs)+'<p class="factline">Candela is intensity in one direction. Add up all directions and you get <b>lumens</b> (total output); spread those over a surface and you get <b>lux</b> — both in the Light part.</p>';
+    var s=section(c,stage,panel),cv=s.querySelector('.cv'),CV=new Canvas(cv),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=0.1,MAX=2e6,cd=1;
+    function up(){cd=logScale(sl.value/1000,MIN,MAX);var f=cd<1000?{v:sig(cd),u:'cd'}:(cd<1e6?{v:sig(cd/1000),u:'kcd'}:{v:sig(cd/1e6),u:'Mcd'});rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      sub.textContent='≈ as bright as '+sig(cd)+' candle'+(Math.round(cd)===1?'':'s')+' in that direction';nearestLog(an,cd);}
+    sl.addEventListener('input',up);up();
+    function draw(dt,ts){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var cx=w*0.3,cy=h/2,b=clamp(invLog(cd,MIN,MAX),0,1);
+      // beam cone to the right
+      var reach=w*0.62,spread=lerp(30,70,1-b);
+      var grd=ctx.createLinearGradient(cx,cy,cx+reach,cy);grd.addColorStop(0,'rgba(255,214,110,'+(0.1+b*0.5)+')');grd.addColorStop(1,'rgba(255,214,110,0)');
+      ctx.fillStyle=grd;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+reach,cy-spread);ctx.lineTo(cx+reach,cy+spread);ctx.closePath();ctx.fill();
+      var r=14+b*30;var g2=ctx.createRadialGradient(cx,cy,2,cx,cy,r*1.8);g2.addColorStop(0,'rgba(255,230,150,'+(0.3+b*0.6)+')');g2.addColorStop(1,'rgba(255,230,150,0)');
+      ctx.fillStyle=g2;ctx.beginPath();ctx.arc(cx,cy,r*1.8,0,6.2832);ctx.fill();
+      ctx.fillStyle='rgba('+Math.round(lerp(150,255,b))+','+Math.round(lerp(150,220,b))+',120,1)';ctx.beginPath();ctx.arc(cx,cy,10,0,6.2832);ctx.fill();}
+    if(REDUCED){up();draw(0,0);sl.addEventListener('input',function(){draw(0,0);});}else register(cv,draw);
+    return s;
+  };
+
+  B.area=function(c){
+    var refs=[{v:0.0006,d:'6 cm²',l:'a postage stamp'},{v:0.06,d:'0.06 m²',l:'a sheet of A4'},{v:1.8,d:'1.8 m²',l:'a door'},{v:12,d:'12 m²',l:'a parking space'},{v:260,d:'260 m²',l:'a tennis court'},{v:7000,d:'7000 m²',l:'a football pitch'},{v:10000,d:'1 ha',l:'a hectare'},{v:1e6,d:'1 km²',l:'a small town centre'}];
+    var stage='<svg viewBox="0 0 300 180" class="stage-canvas" style="height:170px;width:auto;max-width:100%;margin-inline:auto"><rect class="sq" x="110" y="70" width="80" height="80" rx="4" fill="var(--accent)" opacity="0.85"/></svg>'+
+      '<div style="margin-top:6px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>From a stamp to a square kilometre</label><input type="range" class="sl" min="0" max="1000" value="430"></div>'+
+      '<div class="ticks"><span>1 cm²</span><span>1 km²</span></div>';
+    var panel='<p class="lead">Area is <b>how much flat surface something covers</b> — length stretched into two directions. Its unit is the <b>square metre</b>: a patch one metre by one metre.</p>'+
+      def('The unit · square metre (m²)','Because it\'s metres × metres, the prefixes square too: <strong>1 m² = 10,000 cm²</strong>. Big land uses the <strong>hectare</strong> (10,000 m²) and the <strong>km²</strong> (a million m²).')+
+      feel(refs)+'<p class="factline">Double the side of a square and the area <b>quadruples</b> — that\'s why a 2× bigger pizza is a far better deal than it looks.</p>';
+    var s=section(c,stage,panel),sq=s.querySelector('.sq'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=1e-4,MAX=1e6,tgt=0.5,cur=0.5;
+    function up(){var a=logScale(sl.value/1000,MIN,MAX),f=fmtArea(a);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      sub.textContent='a square '+fmtLength(Math.sqrt(a)).v+' '+fmtLength(Math.sqrt(a)).u+' on each side';nearestLog(an,a);tgt=clamp(invLog(a,MIN,MAX),0.02,1);}
+    sl.addEventListener('input',up);up();
+    function draw(){cur+=(tgt-cur)*0.18;var side=lerp(14,150,cur);sq.setAttribute('width',side);sq.setAttribute('height',side);sq.setAttribute('x',150-side/2);sq.setAttribute('y',155-side);}
+    if(REDUCED){cur=tgt;draw();sl.addEventListener('input',function(){cur=tgt;draw();});}else register(s.querySelector('svg'),draw);
+    return s;
+  };
+
+  B.volume=function(c){
+    var refs=[{v:0.005,d:'5 mL',l:'a teaspoon'},{v:0.25,d:'250 mL',l:'a cup'},{v:1,d:'1 L',l:'a water bottle'},{v:10,d:'10 L',l:'a bucket'},{v:200,d:'200 L',l:'a bathtub'},{v:1000,d:'1 m³',l:'a cubic metre'},{v:2.5e6,d:'2.5 ML',l:'a swimming pool'}];
+    var stage='<svg viewBox="0 0 240 180" class="stage-canvas" style="height:170px;width:auto;max-width:100%;margin-inline:auto">'+
+      '<rect x="60" y="20" width="120" height="150" rx="10" fill="none" stroke="var(--line)" stroke-width="2.5"/>'+
+      '<clipPath id="volClip"><rect x="62" y="22" width="116" height="146" rx="8"/></clipPath>'+
+      '<g clip-path="url(#volClip)"><rect class="liq" x="60" y="120" width="120" height="60" fill="var(--accent)" opacity="0.82"/>'+
+      '<rect class="liq2" x="60" y="116" width="120" height="8" fill="var(--accent)"/></g></svg>'+
+      '<div style="margin-top:6px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>From a teaspoon to a swimming pool</label><input type="range" class="sl" min="0" max="1000" value="430"></div>'+
+      '<div class="ticks"><span>1 mL</span><span>2.5 ML</span></div>';
+    var panel='<p class="lead">Volume is <b>how much space something takes up</b> — length in three directions. Everyday metric uses the <b>litre</b>; the pure SI unit is the cubic metre.</p>'+
+      def('The unit · litre (L) &amp; m³','A litre is a 10 cm cube of water (and it weighs 1 kg). <strong>1 m³ = 1000 L</strong>. A millilitre is one cm³ — a sugar-cube of space.')+
+      feel(refs)+'<p class="factline">Volume grows even faster than area: double every side of a box and it holds <b>eight times</b> as much.</p>';
+    var s=section(c,stage,panel),liq=s.querySelector('.liq'),liq2=s.querySelector('.liq2'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=0.001,MAX=2.5e6,tgt=0.5,cur=0;
+    function up(){var l=logScale(sl.value/1000,MIN,MAX),f=fmtVol(l);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      sub.textContent='weighs about '+fmtMass(l*1000).v+' '+fmtMass(l*1000).u+' if it were water';nearestLog(an,l);tgt=clamp(invLog(l,MIN,MAX),0.03,1);}
+    sl.addEventListener('input',up);up();
+    function draw(){cur+=(tgt-cur)*0.18;var top=168-cur*146;liq.setAttribute('y',top+4);liq.setAttribute('height',Math.max(0,168-top));liq2.setAttribute('y',top);}
+    if(REDUCED){cur=tgt;draw();sl.addEventListener('input',function(){cur=tgt;draw();});}else register(s.querySelector('svg'),draw);
+    return s;
+  };
+
+  B.angle=function(c){
+    var refs=[{v:30,d:'30°',l:'π/6 rad · a clock\'s 5 minutes'},{v:57.3,d:'57.3°',l:'exactly 1 radian'},{v:90,d:'90°',l:'π/2 rad · a right angle'},{v:180,d:'180°',l:'π rad · a straight line'},{v:360,d:'360°',l:'2π rad · a full turn'}];
+    var stage='<svg viewBox="0 0 240 200" class="stage-canvas" style="height:190px;width:auto;max-width:100%;margin-inline:auto">'+
+      '<circle cx="120" cy="100" r="78" fill="none" stroke="var(--line)" stroke-width="1.5"/>'+
+      '<path class="arc" fill="var(--accent)" opacity="0.18"/>'+
+      '<line x1="120" y1="100" x2="198" y2="100" stroke="var(--ink-faint)" stroke-width="2"/>'+
+      '<line class="arm" x1="120" y1="100" x2="198" y2="100" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round"/>'+
+      '<circle cx="120" cy="100" r="4" fill="var(--ink)"/></svg>'+
+      '<div style="margin-top:4px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>Sweep the angle around</label><input type="range" class="sl" min="0" max="360" value="57"></div>'+
+      '<div class="ticks"><span>0°</span><span>360°</span></div>';
+    var panel='<p class="lead">An angle is <b>how much something has turned</b>. We grow up with degrees (360 in a circle), but the SI unit is the <b>radian</b> — the "natural" way maths measures turn.</p>'+
+      def('The unit · radian (rad)','One radian is the angle where the arc you\'ve swept equals the radius. A full circle is <strong>2π ≈ 6.28 radians = 360°</strong>, so <strong>1 rad ≈ 57.3°</strong>.')+
+      feel(refs,'Feel it — the same turn, two ways')+'<p class="factline">Radians make the arc length trivial: <b>arc = radius × angle</b>. That clean link is why physics and calculus prefer them.</p>';
+    var s=section(c,stage,panel),arm=s.querySelector('.arm'),arc=s.querySelector('.arc'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var tgt=57,cur=57,cx=120,cy=100,R=78;
+    function up(){var deg=parseFloat(sl.value),rad=deg*Math.PI/180;rd.innerHTML=sig(rad,3)+'<span class="u"> rad</span>';
+      sub.textContent='= '+sig(deg)+'°  ·  '+sig(deg/90,3)+' right angles';nearestLin(an,deg);tgt=deg;}
+    sl.addEventListener('input',up);up();
+    function draw(){cur+=(tgt-cur)*(REDUCED?1:0.2);var a=-cur*Math.PI/180;
+      var x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);arm.setAttribute('x2',x);arm.setAttribute('y2',y);
+      var large=cur>180?1:0;var sweep=1;
+      var d='M'+cx+' '+cy+' L'+(cx+R)+' '+cy+' A'+R+' '+R+' 0 '+large+' '+sweep+' '+x+' '+y+' Z';
+      if(cur<=0.1)d='';arc.setAttribute('d',d);}
+    if(REDUCED){cur=tgt;draw();sl.addEventListener('input',function(){cur=tgt;draw();});}else register(s.querySelector('svg'),draw);
+    return s;
+  };
+
+  B.speed=function(c){
+    var refs=[{v:5,d:'5 km/h',l:'a relaxed walk'},{v:15,d:'15 km/h',l:'a gentle jog'},{v:25,d:'25 km/h',l:'a city cyclist'},{v:44,d:'44 km/h',l:'Usain Bolt, flat out'},{v:50,d:'50 km/h',l:'a car in town'},{v:110,d:'110 km/h',l:'a cheetah / a highway'},{v:300,d:'300 km/h',l:'a bullet train'}];
+    var stage='<canvas class="stage-canvas cv" style="height:150px"></canvas>'+
+      '<div style="margin-top:10px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span class="readout rd"></span><span class="readout-sub sub" style="margin:0"></span></div>'+
+      '<div class="control"><label>Set the speed and watch it cross</label><input type="range" class="sl" min="0" max="320" value="50"></div>'+
+      '<div class="ticks"><span>0</span><span>320 km/h</span></div>';
+    var panel='<p class="lead">Speed is <b>how much distance you cover each second</b> — length ÷ time. Pure SI is <b>metres per second</b>; daily life uses km/h.</p>'+
+      def('The unit · metre / second (m/s)','To convert: <strong>÷ 3.6</strong> turns km/h into m/s. So a tidy 36 km/h is 10 m/s.')+
+      feel(refs)+'<p class="factline">The ultimate limit is <b>light: 300,000 km every second</b> — over a million times faster than a jet, and nothing with mass can reach it.</p>';
+    var s=section(c,stage,panel),cv=s.querySelector('.cv'),CV=new Canvas(cv),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var kmh=50,x=0;
+    function up(){kmh=parseFloat(sl.value);rd.innerHTML=sig(kmh)+'<span class="u"> km/h</span>';sub.textContent=sig(kmh/3.6)+' m/s  ·  '+sig(kmh/1.609)+' mph';nearestLin(an,kmh);}
+    sl.addEventListener('input',up);up();
+    function car(ctx,px,py,col){ctx.fillStyle=col;ctx.beginPath();ctx.roundRect?ctx.roundRect(px-20,py-9,40,16,5):ctx.rect(px-20,py-9,40,16);ctx.fill();ctx.beginPath();ctx.roundRect?ctx.roundRect(px-10,py-16,20,9,3):ctx.rect(px-10,py-16,20,9);ctx.fill();ctx.fillStyle=cssVar(s,'--surface-2');ctx.beginPath();ctx.arc(px-11,py+7,4.5,0,6.2832);ctx.fill();ctx.beginPath();ctx.arc(px+11,py+7,4.5,0,6.2832);ctx.fill();}
+    function draw(dt){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var ly=h*0.62,col=cssVar(s,'--accent');
+      ctx.strokeStyle=cssVar(s,'--line');ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(10,ly+16);ctx.lineTo(w-10,ly+16);ctx.stroke();
+      ctx.setLineDash([12,12]);ctx.globalAlpha=0.5;ctx.strokeStyle=cssVar(s,'--ink-faint');ctx.beginPath();ctx.moveTo(10,ly+16);ctx.lineTo(w-10,ly+16);ctx.stroke();ctx.globalAlpha=1;ctx.setLineDash([]);
+      var pps=(kmh/320)*w*0.78;if(!REDUCED)x+=pps*dt;if(x>w+30)x=-30;var px=REDUCED?w*0.5:x;
+      if(!REDUCED&&kmh>8){ctx.strokeStyle=col;ctx.globalAlpha=0.22;ctx.lineWidth=3;for(var k=1;k<=3;k++){ctx.beginPath();ctx.moveTo(px-24,ly-4+k*5);ctx.lineTo(px-24-Math.min(70,kmh*0.4),ly-4+k*5);ctx.stroke();}ctx.globalAlpha=1;}
+      car(ctx,px,ly,col);
+      if(REDUCED){ctx.fillStyle=cssVar(s,'--ink-faint');ctx.font='11px "Space Mono",monospace';ctx.textAlign='center';ctx.fillText('motion paused — reduced-motion is on',w/2,h-8);ctx.textAlign='start';}}
+    if(REDUCED){up();draw(0);sl.addEventListener('input',function(){draw(0);});}else register(cv,draw);
+    return s;
+  };
+
+  B.accel=function(c){
+    var refs=[{v:2,d:'2 m/s²',l:'a city bus pulling away'},{v:4,d:'4 m/s²',l:'a brisk car launch'},{v:9.8,d:'9.8 m/s²',l:'free fall (gravity, "g")'},{v:30,d:'30 m/s²',l:'a drag racer (≈3 g)'},{v:50,d:'50 m/s²',l:'a fighter-jet turn (≈5 g)'}];
+    var stage='<canvas class="stage-canvas cv" style="height:140px"></canvas>'+
+      '<div style="margin-top:10px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span class="readout rd"></span><span class="readout-sub sub" style="margin:0"></span></div>'+
+      '<div class="control"><label>How hard does it speed up?</label><input type="range" class="sl" min="1" max="50" value="10" step="0.5"></div>'+
+      '<div class="ticks"><span>1 m/s²</span><span>50 m/s²</span></div>';
+    var panel='<p class="lead">Acceleration is <b>how quickly speed itself changes</b> — the push you feel in your back when a car takes off. It\'s metres per second, <em>per second</em>.</p>'+
+      def('The unit · m/s²','It means "gains this many m/s of speed every second." Earth\'s gravity pulls everything down at <strong>9.8 m/s²</strong>, which we nickname <strong>1 g</strong>.')+
+      feel(refs)+'<p class="factline">Zero acceleration doesn\'t mean stopped — cruising at a steady 100 km/h is zero acceleration. It only appears when speed or direction <b>changes</b>.</p>';
+    var s=section(c,stage,panel),cv=s.querySelector('.cv'),CV=new Canvas(cv),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var a=10,x=0,v=0;
+    function up(){a=parseFloat(sl.value);rd.innerHTML=sig(a)+'<span class="u"> m/s²</span>';sub.textContent='= '+sig(a/9.8,2)+' g  ·  gains '+sig(a)+' m/s every second';nearestLin(an,a);}
+    sl.addEventListener('input',up);up();
+    function draw(dt){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var ly=h*0.58,col=cssVar(s,'--accent');
+      ctx.strokeStyle=cssVar(s,'--line');ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(8,ly+14);ctx.lineTo(w-8,ly+14);ctx.stroke();
+      if(!REDUCED){v+=a*dt*0.9;x+=v*dt*4;}if(x>w-20){x=0;v=0;}var px=REDUCED?w*0.3:x+20;
+      if(!REDUCED){ctx.strokeStyle=col;ctx.globalAlpha=0.25;ctx.lineWidth=3;var sl2=Math.min(90,v*4);ctx.beginPath();ctx.moveTo(px-12,ly);ctx.lineTo(px-12-sl2,ly);ctx.stroke();ctx.globalAlpha=1;}
+      ctx.fillStyle=col;ctx.beginPath();ctx.arc(px,ly,11,0,6.2832);ctx.fill();
+      ctx.fillStyle=cssVar(s,'--ink-faint');ctx.font='11px "Space Mono",monospace';
+      ctx.fillText(REDUCED?'(motion paused)':('speed now: '+sig(v*3.6*0.9)+' km/h'),8,16);}
+    if(REDUCED){up();draw(0);sl.addEventListener('input',function(){draw(0);});}else register(cv,draw);
+    return s;
+  };
+
+  B.freq=function(c){
+    var refs=[{v:0.25,d:'0.25 Hz',l:'slow, calm breathing'},{v:1.2,d:'1.2 Hz',l:'a resting heartbeat'},{v:4,d:'4 Hz',l:'tapping your foot fast'},{v:8,d:'8 Hz',l:'a bee\'s lazy wingbeat'},{v:50,d:'50 Hz',l:'mains electricity (India)'},{v:60,d:'60 Hz',l:'a phone screen refresh'}];
+    var stage='<canvas class="stage-canvas cv" style="height:140px"></canvas>'+
+      '<div style="margin-top:10px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span class="readout rd"></span><span class="readout-sub sub" style="margin:0"></span></div>'+
+      '<div class="control"><label>Slow pulse to a blur</label><input type="range" class="sl" min="0" max="1000" value="437"></div>'+
+      '<div class="ticks"><span>0.2 Hz</span><span>12 Hz</span></div>';
+    var panel='<p class="lead">Frequency counts <b>how many times something repeats each second</b> — a beat, a wave, a flash. One cycle per second is one <b>hertz</b>.</p>'+
+      def('The unit · hertz (Hz)','Frequency and time are two sides of a coin: the gap between repeats (the <strong>period</strong>) is just <strong>1 ÷ frequency</strong>. At 2 Hz, each cycle takes half a second.')+
+      feel(refs)+'<p class="factline">It keeps climbing past what the eye can follow: the note A is <b>440 Hz</b>, FM radio ~<b>100 MHz</b>, Wi‑Fi <b>2.4 GHz</b> — billions of cycles a second.</p>';
+    var s=section(c,stage,panel),cv=s.querySelector('.cv'),CV=new Canvas(cv),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var f=1.2,phase=0;
+    function up(){f=logScale(sl.value/1000,0.2,12);rd.innerHTML=sig(f)+'<span class="u"> Hz</span>';sub.textContent='one cycle every '+sig(1/f)+' s';nearestLog(an,f);}
+    sl.addEventListener('input',up);up();
+    function draw(dt){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var mid=h/2,col=cssVar(s,'--accent');
+      ctx.strokeStyle=cssVar(s,'--line');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,mid);ctx.lineTo(w,mid);ctx.stroke();
+      if(!REDUCED)phase+=dt*f*2*Math.PI;var cyc=clamp(f*0.9,1.2,9);
+      ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.beginPath();
+      for(var px=0;px<=w;px+=2){var a=(px/w)*cyc*2*Math.PI-phase;var y=mid-Math.sin(a)*(h*0.33);if(px===0)ctx.moveTo(px,y);else ctx.lineTo(px,y);}ctx.stroke();
+      var by=REDUCED?mid-(h*0.33):mid-Math.sin(phase)*(h*0.33);ctx.fillStyle=col;ctx.beginPath();ctx.arc(w-20,by,7,0,6.2832);ctx.fill();
+      if(REDUCED){ctx.fillStyle=cssVar(s,'--ink-faint');ctx.font='11px "Space Mono",monospace';ctx.textAlign='center';ctx.fillText('one frame — reduced-motion is on',w/2,h-6);ctx.textAlign='start';}}
+    if(REDUCED){up();draw(0);sl.addEventListener('input',function(){draw(0);});}else register(cv,draw);
+    return s;
+  };
+
+  B.force=function(c){
+    var refs=[{v:0.1,d:'0.1 N',l:'holding a strawberry'},{v:1,d:'1 N',l:'the weight of an apple'},{v:10,d:'10 N',l:'a full water bottle'},{v:100,d:'100 N',l:'a firm handshake grip'},{v:700,d:'700 N',l:'an adult\'s body weight'},{v:9000,d:'9 kN',l:'a small car at rest'}];
+    var stage='<svg viewBox="0 0 320 160" class="stage-canvas" style="height:150px;width:auto;max-width:100%;margin-inline:auto">'+
+      '<rect x="20" y="40" width="14" height="80" rx="3" fill="var(--ink-faint)"/>'+
+      '<path class="spring" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>'+
+      '<rect class="blk" x="150" y="56" width="48" height="48" rx="8" fill="var(--accent)"/>'+
+      '<text class="arr" x="240" y="84" font-family="var(--font-mono)" font-size="13" fill="var(--ink-soft)"></text></svg>'+
+      '<div style="margin-top:8px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>From a strawberry to a car\'s weight</label><input type="range" class="sl" min="0" max="1000" value="330"></div>'+
+      '<div class="ticks"><span>0.1 N</span><span>9 kN</span></div>';
+    var panel='<p class="lead">Force is <b>any push or pull</b> — what starts, stops or bends things. One <b>newton</b> is roughly the gentle downward pull of a small apple in your hand.</p>'+
+      def('The unit · newton (N)','Built from the base units: <strong>1 N = 1 kg accelerated at 1 m/s²</strong>. That\'s Newton\'s famous <strong>F = m × a</strong>.')+
+      feel(refs)+'<p class="factline">Your "weight" is just gravity\'s force on your mass: about <b>10 newtons for every kilogram</b> you\'re made of.</p>';
+    var s=section(c,stage,panel),spring=s.querySelector('.spring'),blk=s.querySelector('.blk'),arr=s.querySelector('.arr'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=0.1,MAX=9000,tgt=0.4,cur=0.4;
+    function springPath(x2){var coils=8,x0=34,y=80,amp=18,d='M'+x0+' '+y;var seg=(x2-x0)/(coils*2);
+      for(var i=1;i<=coils*2;i++){var x=x0+seg*i;var yy=y+(i%2?-amp:amp);d+=' L'+x.toFixed(1)+' '+yy;}d+=' L'+x2+' '+y;return d;}
+    function up(){var n=logScale(sl.value/1000,MIN,MAX),f=fmtForce(n);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      sub.textContent='≈ the weight of '+fmtMass(n/9.8*1000).v+' '+fmtMass(n/9.8*1000).u;nearestLog(an,n);tgt=clamp(invLog(n,MIN,MAX),0.05,1);}
+    sl.addEventListener('input',up);up();
+    function draw(){cur+=(tgt-cur)*(REDUCED?1:0.16);var x2=lerp(70,150,cur);spring.setAttribute('d',springPath(x2));blk.setAttribute('x',x2);arr.setAttribute('x',x2+58);arr.textContent='→ pull';}
+    if(REDUCED){cur=tgt;draw();sl.addEventListener('input',function(){cur=tgt;draw();});}else register(s.querySelector('svg'),draw);
+    return s;
+  };
+
+  B.pressure=function(c){
+    var refs=[{v:300,d:'300 Pa',l:'a soft breath on your hand'},{v:101325,d:'101 kPa',l:'the air around you (1 atm)'},{v:220000,d:'220 kPa',l:'a car tyre'},{v:5e6,d:'5 MPa',l:'a jet of a pressure washer'},{v:1.1e7,d:'11 MPa',l:'the deep-sea, 1 km down'}];
+    var stage='<svg viewBox="0 0 240 170" class="stage-canvas" style="height:160px;width:auto;max-width:100%;margin-inline:auto">'+
+      '<path d="M30 140 A90 90 0 0 1 210 140" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round"/>'+
+      '<g class="gticks"></g>'+
+      '<line class="needle" x1="120" y1="140" x2="120" y2="66" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>'+
+      '<circle cx="120" cy="140" r="8" fill="var(--ink)"/></svg>'+
+      '<div style="margin-top:4px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>From a breath to the deep sea</label><input type="range" class="sl" min="0" max="1000" value="500"></div>'+
+      '<div class="ticks"><span>100 Pa</span><span>11 MPa</span></div>';
+    var panel='<p class="lead">Pressure is <b>force squeezed onto an area</b> — the same push feels sharper through a smaller point. The unit is the <b>pascal</b>.</p>'+
+      def('The unit · pascal (Pa)','<strong>1 Pa = 1 newton spread over 1 square metre</strong> — actually very gentle, so we usually use kilopascals or <strong>bar</strong> (1 bar ≈ atmospheric pressure).')+
+      feel(refs)+'<p class="factline">It\'s why a sharp knife or a stiletto heel works: a modest force on a <b>tiny</b> area becomes enormous pressure.</p>';
+    var s=section(c,stage,panel),needle=s.querySelector('.needle'),gt=s.querySelector('.gticks'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    for(var i=0;i<=8;i++){var ang=Math.PI*(1-i/8);var x1=120+72*Math.cos(ang),y1=140-72*Math.sin(ang),x2=120+84*Math.cos(ang),y2=140-84*Math.sin(ang);var l=document.createElementNS(SVGNS,'line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);l.setAttribute('stroke','var(--ink-faint)');l.setAttribute('stroke-width','1.5');l.setAttribute('opacity','0.6');gt.appendChild(l);}
+    var MIN=100,MAX=1.1e7,tgt=0.5,cur=0.5;
+    function up(){var p=logScale(sl.value/1000,MIN,MAX),f=fmtPr(p);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      sub.textContent='= '+sig(p/101325,2)+' atmospheres  ·  '+sig(p/6895)+' psi';nearestLog(an,p);tgt=clamp(invLog(p,MIN,MAX),0,1);}
+    sl.addEventListener('input',up);up();
+    function draw(){cur+=(tgt-cur)*(REDUCED?1:0.16);var ang=Math.PI*(1-cur);var x=120+74*Math.cos(ang),y=140-74*Math.sin(ang);needle.setAttribute('x2',x);needle.setAttribute('y2',y);}
+    if(REDUCED){cur=tgt;draw();sl.addEventListener('input',function(){cur=tgt;draw();});}else register(s.querySelector('svg'),draw);
+    return s;
+  };
+
+  B.density=function(c){
+    var refs=[{v:240,d:'240',l:'cork — floats high'},{v:500,d:'500',l:'oak wood — just floats'},{v:1000,d:'1000',l:'water — the dividing line'},{v:2700,d:'2700',l:'aluminium — sinks'},{v:7870,d:'7870',l:'iron — sinks fast'},{v:19300,d:'19300',l:'gold — straight down'}];
+    var stage='<svg viewBox="0 0 240 180" class="stage-canvas" style="height:170px;width:auto;max-width:100%;margin-inline:auto">'+
+      '<rect x="24" y="30" width="192" height="138" rx="10" fill="none" stroke="var(--line)" stroke-width="2"/>'+
+      '<clipPath id="denClip"><rect x="26" y="32" width="188" height="134" rx="8"/></clipPath>'+
+      '<g clip-path="url(#denClip)"><rect x="24" y="78" width="192" height="90" fill="var(--cool)" opacity="0.28"/>'+
+      '<line x1="24" y1="78" x2="216" y2="78" stroke="var(--cool)" stroke-width="2" opacity="0.6"/>'+
+      '<rect class="blk" x="96" y="60" width="48" height="40" rx="6" fill="var(--accent)"/></g></svg>'+
+      '<div style="margin-top:4px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>Float or sink? Change the density</label><input type="range" class="sl" min="0" max="1000" value="430"></div>'+
+      '<div class="ticks"><span>10</span><span>20,000 kg/m³</span></div>';
+    var panel='<p class="lead">Density is <b>how much mass is packed into a space</b> — mass ÷ volume. It\'s what decides whether something floats.</p>'+
+      def('The unit · kg/m³','A derived unit: kilograms per cubic metre. The magic number is water at <strong>1000 kg/m³</strong>. Less than that floats; more than that sinks.')+
+      feel(refs,'Feel it — water is 1000')+'<p class="factline">A huge steel ship floats because its <b>overall</b> density — steel plus all the air inside — is less than water\'s. Shape beats material.</p>';
+    var s=section(c,stage,panel),blk=s.querySelector('.blk'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=10,MAX=20000,tgt=78,cur=78;
+    function up(){var d=logScale(sl.value/1000,MIN,MAX);rd.innerHTML=sig(d)+'<span class="u"> kg/m³</span>';
+      sub.textContent=d<1000?('floats — '+sig((1-d/1000)*100)+'% sits above water'):(d>1000?'sinks to the bottom':'neutral — hangs in the water');nearestLog(an,d);
+      if(d<=1000){var sub2=d/1000;tgt=78-(1-sub2)*40;}else{tgt=Math.min(128,78+invLog(d,1000,MAX)*44);}}
+    sl.addEventListener('input',up);up();
+    function draw(){cur+=(tgt-cur)*(REDUCED?1:0.14);blk.setAttribute('y',cur);}
+    if(REDUCED){cur=tgt;draw();sl.addEventListener('input',function(){cur=tgt;draw();});}else register(s.querySelector('svg'),draw);
+    return s;
+  };
+
+  B.energy=function(c){
+    var refs=[{v:1,d:'1 J',l:'one clap of your hands'},{v:50,d:'50 J',l:'throwing a ball'},{v:10000,d:'10 kJ',l:'an AA battery'},{v:40000,d:'40 kJ',l:'charging a phone once'},{v:300000,d:'300 kJ',l:'a slice of bread'},{v:3.6e6,d:'1 kWh',l:'a fridge for a day'}];
+    var stage='<svg viewBox="0 0 440 170" class="stage-canvas" style="height:auto;aspect-ratio:440/170">'+
+      '<rect x="30" y="20" width="120" height="130" rx="12" fill="none" stroke="var(--line)" stroke-width="2"/>'+
+      '<rect class="fill" x="34" y="110" width="112" height="36" rx="8" fill="var(--accent)"/>'+
+      '<text x="90" y="166" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-faint)">stored energy</text>'+
+      '<line x1="330" y1="20" x2="330" y2="150" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 4"/>'+
+      '<g class="apple"><circle cx="330" cy="140" r="13" fill="var(--hot)"/><rect x="328" y="123" width="3" height="8" fill="var(--leaf)"/></g>'+
+      '<text x="365" y="144" font-family="var(--font-mono)" font-size="10" fill="var(--ink-soft)">apple</text></svg>'+
+      '<div style="margin-top:8px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>From one clap to a day of fridge</label><input type="range" class="sl" min="0" max="1000" value="620"></div>'+
+      '<div class="ticks"><span>1 J</span><span>1 kWh</span></div>';
+    var panel='<p class="lead">Energy is the <b>capacity to make something happen</b> — to move, heat, light or lift. One <b>joule</b> is about the effort to lift a small apple one metre.</p>'+
+      def('The unit · joule (J)','Food labels use <strong>Calories</strong> (1 ≈ 4,184 J) and power bills use <strong>kilowatt-hours</strong> (1 kWh = 3.6 million J). Same thing, different scoops.')+
+      '<div><div class="feel-h">This much energy could…</div><div class="eqgrid eq"></div></div>'+
+      '<div style="margin-top:14px"><div class="feel-h">Feel it</div>'+anchorList(refs)+'</div>';
+    var s=section(c,stage,panel),fill=s.querySelector('.fill'),apple=s.querySelector('.apple'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors'),eq=s.querySelector('.eq');
+    var MIN=1,MAX=3.6e6,tf=0,cf=0,ta=140,ca=140;
+    function cd(v,k){return '<div class="eq"><div class="ev">'+v+'</div><div class="ek">'+k+'</div></div>';}
+    function up(){var j=logScale(sl.value/1000,MIN,MAX),f=fmtEnergy(j);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      sub.textContent=sig(j/3600)+' Wh  ·  '+sig(j/4184)+' food Calories';
+      var lift=j/0.98,led=j/9,water=j/4184,phone=j/40000*100;
+      eq.innerHTML=cd(lift>=1000?sig(lift/1000)+' km':sig(lift)+' m','lift an apple this high')+cd(sig(led>=60?led/60:led)+(led>=60?' min':' s'),'power a 9 W LED')+cd(sig(water*1000)+' ml','heat water by 1 °C')+cd(sig(phone)+' %','of a phone\'s battery');
+      nearestLog(an,j);tf=invLog(j,MIN,MAX);ta=140-Math.min(118,invLog(j,MIN,MAX)*118);}
+    sl.addEventListener('input',up);up();
+    function draw(){cf+=(tf-cf)*0.15;var top=Math.max(22,146-cf*124);fill.setAttribute('y',top);fill.setAttribute('height',Math.max(0,146-top));ca+=(ta-ca)*0.15;apple.setAttribute('transform','translate(0,'+(ca-140)+')');}
+    if(REDUCED){cf=tf;ca=ta;draw();sl.addEventListener('input',function(){cf=tf;ca=ta;draw();});}else register(s.querySelector('svg'),draw);
+    return s;
+  };
+
+  B.power=function(c){
+    var refs=[{v:1,d:'1 W',l:'a gadget on standby'},{v:9,d:'9 W',l:'a bright LED bulb'},{v:60,d:'60 W',l:'a laptop working'},{v:100,d:'100 W',l:'your body\'s own heat'},{v:1000,d:'1000 W',l:'a microwave oven'},{v:2000,d:'2000 W',l:'an electric kettle'},{v:3000,d:'3000 W',l:'an EV fast-charger'}];
+    var stage='<canvas class="stage-canvas cv" style="height:150px"></canvas>'+
+      '<div style="margin-top:8px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span class="readout rd"></span><span class="readout-sub sub" style="margin:0"></span></div>'+
+      '<div class="control"><label>Turn up the power</label><input type="range" class="sl" min="1" max="3000" value="60"></div>'+
+      '<div class="ticks"><span>1 W</span><span>3000 W</span></div>'+
+      '<div style="margin-top:12px;font-family:var(--font-mono);font-size:.82rem;color:var(--ink-soft)">energy used so far: <b class="acc" style="color:var(--accent)">0 J</b> <button class="mini ghost rst" style="padding:4px 10px;margin-left:6px">reset</button></div>';
+    var panel='<p class="lead">Power is the <b>rate you use energy</b> — joules per second. A big battery holds a lot of energy; power is how fast you spend it. The unit is the <b>watt</b>.</p>'+
+      def('The unit · watt (W)','<strong>1 watt = 1 joule every second</strong>, so power × time = energy. Run a 2000 W kettle for 60 s and you\'ve spent 120,000 J. (One "horsepower" ≈ 746 W.)')+
+      feel(refs)+'<p class="factline">That\'s why bills are in kilowatt-<b>hours</b>: power (how hungry a device is) × time (how long it ran).</p>';
+    var s=section(c,stage,panel),cv=s.querySelector('.cv'),CV=new Canvas(cv),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),acc=s.querySelector('.acc'),an=s.querySelector('.anchors');
+    var W=60,joules=0,packets=[],pacc=0;
+    s.querySelector('.rst').addEventListener('click',function(){joules=0;});
+    function up(){W=parseFloat(sl.value);rd.innerHTML=sig(W)+'<span class="u"> W</span>';sub.textContent=W>=1000?sig(W/1000)+' kW  ·  '+sig(W/746)+' hp':sig(W/746)+' horsepower';nearestLin(an,W);}
+    sl.addEventListener('input',up);up();
+    function draw(dt){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var col=cssVar(s,'--accent'),bx=w-62,by=h*0.46;
+      var bright=clamp((Math.log(W)-Math.log(1))/(Math.log(3000)-Math.log(1)),0,1),gr=26+bright*36;
+      var g=ctx.createRadialGradient(bx,by,4,bx,by,gr);g.addColorStop(0,'rgba(255,220,120,'+(0.25+bright*0.6)+')');g.addColorStop(1,'rgba(255,220,120,0)');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(bx,by,gr,0,6.2832);ctx.fill();
+      ctx.fillStyle='rgba('+Math.round(lerp(120,255,bright))+','+Math.round(lerp(120,214,bright))+','+Math.round(lerp(120,90,bright))+',1)';ctx.beginPath();ctx.arc(bx,by,15,0,6.2832);ctx.fill();
+      ctx.fillStyle=cssVar(s,'--ink-soft');ctx.fillRect(bx-6,by+13,12,8);
+      var rate=clamp(W/120,0.3,26);if(!REDUCED){pacc+=rate*dt;while(pacc>=1){pacc-=1;packets.push({x:4,y:by+(Math.random()*20-10)});}joules+=W*dt;}
+      ctx.fillStyle=col;for(var i=packets.length-1;i>=0;i--){var p=packets[i];p.x+=(bx-20-p.x)*Math.min(1,dt*3.2)+40*dt;ctx.globalAlpha=0.9;ctx.beginPath();ctx.arc(p.x,p.y,3.5,0,6.2832);ctx.fill();if(p.x>bx-18)packets.splice(i,1);}ctx.globalAlpha=1;
+      ctx.fillStyle=cssVar(s,'--ink-faint');ctx.font='11px "Space Mono",monospace';ctx.fillText('joules →',6,by-26);
+      acc.textContent=joules>=1000?sig(joules/1000)+' kJ':Math.round(joules)+' J';if(REDUCED)ctx.fillText('(packets paused)',6,h-8);}
+    if(REDUCED){up();draw(0);sl.addEventListener('input',function(){draw(0);});}else register(cv,draw);
+    return s;
+  };
+
+  B.voltage=function(c){
+    var refs=[{v:1.5,d:'1.5 V',l:'an AA battery'},{v:5,d:'5 V',l:'a USB charger'},{v:12,d:'12 V',l:'a car battery'},{v:230,d:'230 V',l:'a wall socket (India)'},{v:400,d:'400 V',l:'an EV battery pack'},{v:400000,d:'400 kV',l:'a transmission line'}];
+    var stage='<svg viewBox="0 0 240 180" class="stage-canvas" style="height:170px;width:auto;max-width:100%;margin-inline:auto">'+
+      '<rect x="40" y="20" width="60" height="140" rx="8" fill="none" stroke="var(--line)" stroke-width="2"/>'+
+      '<clipPath id="vClip"><rect x="42" y="22" width="56" height="136" rx="6"/></clipPath>'+
+      '<g clip-path="url(#vClip)"><rect class="col" x="40" y="80" width="60" height="80" fill="var(--accent)" opacity="0.85"/></g>'+
+      '<path class="spark" d="M150 40 L140 85 L156 85 L144 140" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/></svg>'+
+      '<div style="margin-top:6px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>From an AA cell to a power line</label><input type="range" class="sl" min="0" max="1000" value="400"></div>'+
+      '<div class="ticks"><span>1 V</span><span>400 kV</span></div>';
+    var panel='<p class="lead">Voltage is the <b>push behind the current</b> — the electrical "pressure" that drives charge along. The unit is the <b>volt</b>.</p>'+
+      def('The unit · volt (V)','Think water in a tank: voltage is the <em>height</em> (the pressure), current is the flow. Higher voltage pushes harder. <strong>1 V = 1 joule of energy per coulomb of charge.</strong>')+
+      feel(refs)+'<p class="factline">Voltage, current and resistance lock together in <b>Ohm\'s law: V = I × R</b>. It\'s not amps that hurt you so much as enough voltage to push them through.</p>';
+    var s=section(c,stage,panel),col=s.querySelector('.col'),spark=s.querySelector('.spark'),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=1,MAX=400000,tgt=0.5,cur=0.5;
+    function up(){var v=logScale(sl.value/1000,MIN,MAX),f=fmtVolt(v);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      var b=clamp(invLog(v,MIN,MAX),0,1);sub.textContent=v<50?'low voltage — safe to touch':(v<1000?'can give a serious shock':'high voltage — deadly at a distance');spark.setAttribute('opacity',(0.2+b*0.7).toFixed(2));nearestLog(an,v);tgt=b;}
+    sl.addEventListener('input',up);up();
+    function draw(){cur+=(tgt-cur)*(REDUCED?1:0.16);var top=158-cur*136;col.setAttribute('y',top);col.setAttribute('height',160-top);}
+    if(REDUCED){cur=tgt;draw();sl.addEventListener('input',function(){cur=tgt;draw();});}else register(s.querySelector('svg'),draw);
+    return s;
+  };
+
+  B.resistance=function(c){
+    var refs=[{v:0.02,d:'0.02 Ω',l:'a thick copper wire'},{v:220,d:'220 Ω',l:'a typical resistor'},{v:1000,d:'1 kΩ',l:'inside small circuits'},{v:50000,d:'50 kΩ',l:'an electric heater, cold'},{v:1e6,d:'1 MΩ',l:'dry human skin'}];
+    var stage='<canvas class="stage-canvas cv" style="height:120px"></canvas>'+
+      '<div style="margin-top:10px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>Open the path, then choke it</label><input type="range" class="sl" min="0" max="1000" value="400"></div>'+
+      '<div class="ticks"><span>0.01 Ω</span><span>1 MΩ</span></div>';
+    var panel='<p class="lead">Resistance is <b>how much a material fights the flow of current</b>. Low resistance lets electricity sail through; high resistance throttles it (and makes heat). The unit is the <b>ohm</b>.</p>'+
+      def('The unit · ohm (Ω)','From Ohm\'s law: <strong>resistance = voltage ÷ current</strong>. Push 1 volt through 1 ohm and exactly 1 amp flows.')+
+      feel(refs)+'<p class="factline">Resistance isn\'t wasted — it\'s the whole point of heaters, toasters and the glowing filament of old bulbs: current fighting through becomes heat and light.</p>';
+    var s=section(c,stage,panel),cv=s.querySelector('.cv'),CV=new Canvas(cv),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=0.01,MAX=1e6,R=1,N=22,dots=[];for(var i=0;i<N;i++)dots.push(Math.random());
+    function up(){R=logScale(sl.value/1000,MIN,MAX);var f=fmtOhm(R);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      var flow=1-clamp(invLog(R,MIN,MAX),0,1);sub.textContent='at 12 V, about '+fmtAmp(12/R).v+' '+fmtAmp(12/R).u+' would flow';nearestLog(an,R);}
+    sl.addEventListener('input',up);up();
+    function draw(dt){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var y=h/2,col=cssVar(s,'--accent');
+      var gap=lerp(h*0.42,4,clamp(invLog(R,MIN,MAX),0,1));
+      ctx.strokeStyle=cssVar(s,'--line');ctx.lineWidth=14;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(14,y);ctx.lineTo(w-14,y);ctx.stroke();
+      // constriction walls
+      ctx.fillStyle=cssVar(s,'--ink-faint');ctx.globalAlpha=0.35;ctx.fillRect(w/2-16,y-9,32,(h*0.5-9)-gap/2);ctx.fillRect(w/2-16,y+gap/2,32,(h*0.5-9)-gap/2);ctx.globalAlpha=1;
+      var spd=clamp(1-invLog(R,MIN,MAX),0.02,1);ctx.fillStyle=col;
+      for(var i=0;i<N;i++){if(!REDUCED)dots[i]+=spd*dt*0.8;if(dots[i]>1)dots[i]-=1;var x=16+dots[i]*(w-32);var near=Math.abs(x-w/2)<20?gap/2-2:9;var oy=(i%2?-1:1)*Math.min(near,(i%5)*2);ctx.beginPath();ctx.arc(x,y+oy,3.5,0,6.2832);ctx.fill();}}
+    if(REDUCED){up();draw(0);sl.addEventListener('input',function(){draw(0);});}else register(cv,draw);
+    return s;
+  };
+
+  B.lumen=function(c){
+    var refs=[{v:12,d:'12 lm',l:'a single candle'},{v:50,d:'50 lm',l:'a small night light'},{v:450,d:'450 lm',l:'a 40 W-equivalent LED'},{v:800,d:'800 lm',l:'a 60 W-equivalent bulb'},{v:1600,d:'1600 lm',l:'a bright room bulb'},{v:5000,d:'5000 lm',l:'a work floodlight'}];
+    var stage='<canvas class="stage-canvas cv" style="height:140px"></canvas>'+
+      '<div style="margin-top:10px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>How much light pours out?</label><input type="range" class="sl" min="0" max="1000" value="430"></div>'+
+      '<div class="ticks"><span>5 lm</span><span>6000 lm</span></div>';
+    var panel='<p class="lead">Lumens measure the <b>total amount of visible light a source pumps out</b>, in every direction at once. It\'s the number on the side of every modern bulb box.</p>'+
+      def('The unit · lumen (lm)','A candela aimed everywhere. Buy bulbs by lumens, not watts: watts tell you energy <em>used</em>, lumens tell you light <em>made</em>. A good LED gives ~100 lm per watt.')+
+      feel(refs)+'<p class="factline">Spread those lumens across a surface and you get <b>lux</b> (next): the same bulb lights a small room brightly but a hall dimly.</p>';
+    var s=section(c,stage,panel),cv=s.querySelector('.cv'),CV=new Canvas(cv),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=5,MAX=6000,lm=800;
+    function up(){lm=logScale(sl.value/1000,MIN,MAX);rd.innerHTML=sig(lm)+'<span class="u"> lm</span>';sub.textContent='≈ a '+sig(lm/13.5)+' W old-style bulb\'s worth of light';nearestLog(an,lm);}
+    sl.addEventListener('input',up);up();
+    function draw(){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var cx=w/2,cy=h/2,b=clamp(invLog(lm,MIN,MAX),0,1);
+      var rays=16;ctx.strokeStyle='rgba(255,210,100,'+(0.15+b*0.5)+')';ctx.lineWidth=2;
+      var rr=20+b*(Math.min(w,h)*0.46);
+      for(var i=0;i<rays;i++){var a=i/rays*6.2832;ctx.beginPath();ctx.moveTo(cx+14*Math.cos(a),cy+14*Math.sin(a));ctx.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a));ctx.stroke();}
+      var g=ctx.createRadialGradient(cx,cy,2,cx,cy,rr);g.addColorStop(0,'rgba(255,225,140,'+(0.3+b*0.55)+')');g.addColorStop(1,'rgba(255,225,140,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,rr,0,6.2832);ctx.fill();
+      ctx.fillStyle='rgba('+Math.round(lerp(160,255,b))+','+Math.round(lerp(160,220,b))+',130,1)';ctx.beginPath();ctx.arc(cx,cy,12,0,6.2832);ctx.fill();}
+    if(REDUCED){up();draw();sl.addEventListener('input',function(){draw();});}else register(cv,function(){draw();});
+    return s;
+  };
+
+  B.lux=function(c){
+    var refs=[{v:0.2,d:'0.2 lx',l:'a full moon'},{v:10,d:'10 lx',l:'a candle-lit dinner'},{v:100,d:'100 lx',l:'a cosy living room'},{v:500,d:'500 lx',l:'a bright office'},{v:1000,d:'1000 lx',l:'an overcast day'},{v:100000,d:'100,000 lx',l:'direct midday sun'}];
+    var stage='<canvas class="stage-canvas cv" style="height:150px"></canvas>'+
+      '<div style="margin-top:10px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>From moonlight to noon sun</label><input type="range" class="sl" min="0" max="1000" value="500"></div>'+
+      '<div class="ticks"><span>0.1 lx</span><span>100,000 lx</span></div>';
+    var panel='<p class="lead">Lux measures <b>how much light actually lands on a surface</b> — how bright a page, a desk or a room really is to work in. The unit is the <b>lux</b>.</p>'+
+      def('The unit · lux (lx)','It\'s lumens spread over area: <strong>1 lux = 1 lumen per square metre</strong>. Move a lamp twice as far away and the lux drops to a quarter.')+
+      feel(refs)+'<p class="factline">Your eyes are astonishing: they handle moonlight (under 1 lux) and bright sun (100,000 lux) — a range of over a hundred thousand to one.</p>';
+    var s=section(c,stage,panel),cv=s.querySelector('.cv'),CV=new Canvas(cv),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors');
+    var MIN=0.1,MAX=1e5,lx=500;
+    function up(){lx=logScale(sl.value/1000,MIN,MAX);rd.innerHTML=sig(lx)+'<span class="u"> lx</span>';sub.textContent=lx<50?'dim — hard to read':(lx<300?'comfortable for relaxing':(lx<1000?'good for working':'very bright'));nearestLog(an,lx);}
+    sl.addEventListener('input',up);up();
+    function draw(){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var b=clamp(invLog(lx,MIN,MAX),0,1);
+      // a little room scene: floor + desk, brightened by b
+      ctx.fillStyle=cssVar(s,'--surface');ctx.fillRect(0,0,w,h);
+      ctx.fillStyle=cssVar(s,'--surface-2');ctx.fillRect(0,h*0.62,w,h*0.38);
+      ctx.fillStyle=cssVar(s,'--ink-faint');ctx.globalAlpha=0.5;ctx.fillRect(w*0.3,h*0.4,w*0.4,h*0.22);ctx.globalAlpha=1;
+      // darkness overlay = inverse of brightness
+      ctx.fillStyle='rgba(8,12,20,'+(1-b)*0.9+')';ctx.fillRect(0,0,w,h);
+      // sun/lamp glow at top-right growing with b
+      var g=ctx.createRadialGradient(w*0.8,h*0.12,2,w*0.8,h*0.12,40+b*120);g.addColorStop(0,'rgba(255,240,190,'+(0.2+b*0.7)+')');g.addColorStop(1,'rgba(255,240,190,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(w*0.8,h*0.12,40+b*120,0,6.2832);ctx.fill();}
+    if(REDUCED){up();draw();sl.addEventListener('input',function(){draw();});}else register(cv,function(){draw();});
+    return s;
+  };
+
+  B.data=function(c){
+    var refs=[{v:1,d:'1 B',l:'a single letter, like "A"'},{v:280,d:'280 B',l:'a short text message'},{v:2048,d:'2 KB',l:'a page of plain text'},{v:3145728,d:'3 MB',l:'a decent phone photo'},{v:5242880,d:'5 MB',l:'a 4-minute song'},{v:3.2e9,d:'3 GB',l:'an hour of HD video'},{v:1.1e12,d:'1 TB',l:'a big laptop drive'}];
+    var stage='<canvas class="stage-canvas cv" style="height:150px"></canvas>'+
+      '<div style="margin-top:10px"><span class="readout rd"></span></div><div class="readout-sub sub"></div>'+
+      '<div class="control"><label>One letter to a terabyte</label><input type="range" class="sl" min="0" max="1000" value="500"></div>'+
+      '<div class="ticks"><span>1 B</span><span>1 TB</span></div>';
+    var panel='<p class="lead">Data measures <b>how much information something holds</b>. The building block is the <b>byte</b> — just enough to store one letter or symbol.</p>'+
+      def('The unit · byte (B)','Each step up is about ×1000: <strong>KB → MB → GB → TB</strong>. A byte is a letter, a megabyte a photo, a gigabyte a couple of hours of music.')+
+      '<div><div class="feel-h">This much could hold…</div><div class="eqgrid eq"></div></div>'+
+      '<div style="margin-top:14px"><div class="feel-h">Feel it</div>'+anchorList(refs)+'</div>';
+    var s=section(c,stage,panel),cv=s.querySelector('.cv'),CV=new Canvas(cv),rd=s.querySelector('.rd'),sub=s.querySelector('.sub'),sl=s.querySelector('.sl'),an=s.querySelector('.anchors'),eq=s.querySelector('.eq');
+    var MIN=1,MAX=1.1e12,frac=0.5,shown=0;
+    function big(n){if(n<1e6)return sig(n/1000)+'k';if(n<1e9)return sig(n/1e6)+'M';if(n<1e12)return sig(n/1e9)+'bn';return sig(n/1e12)+'tn';}
+    function ct(n){if(n<1)return sig(n,2);if(n<1000)return sig(Math.round(n));return big(n);}
+    function cd(v,k){return '<div class="eq"><div class="ev">'+v+'</div><div class="ek">'+k+'</div></div>';}
+    function up(){var b=logScale(sl.value/1000,MIN,MAX),f=fmtData(b);rd.innerHTML=f.v+'<span class="u"> '+f.u+'</span>';
+      sub.textContent='= '+commas(Math.round(b))+' bytes';
+      eq.innerHTML=cd(ct(b),'letters of text')+cd(ct(b/3145728),'photos')+cd(ct(b/5242880),'songs')+cd(ct(b/3.2e9),'hours of HD video');
+      nearestLog(an,b);frac=invLog(b,MIN,MAX);}
+    sl.addEventListener('input',up);up();
+    function draw(){var ctx=CV.ctx,w=CV.w,h=CV.h;ctx.clearRect(0,0,w,h);var col=cssVar(s,'--accent'),cols=28,rows=8,pad=8,cw=(w-pad*2)/cols,ch=(h-pad*2)/rows,total=cols*rows;
+      shown+=(frac*total-shown)*(REDUCED?1:0.18);var idx=0;
+      for(var r=0;r<rows;r++)for(var cc=0;cc<cols;cc++){var x=pad+cc*cw,y=pad+r*ch,on=idx<shown;ctx.fillStyle=on?col:cssVar(s,'--line');ctx.globalAlpha=on?clamp(shown-idx,0.3,1):0.5;var sz=Math.min(cw,ch)-3;ctx.beginPath();ctx.roundRect?ctx.roundRect(x+1,y+1,sz,sz,2):ctx.rect(x+1,y+1,sz,sz);ctx.fill();idx++;}ctx.globalAlpha=1;}
+    if(REDUCED){up();draw();sl.addEventListener('input',function(){draw();});}else register(cv,draw);
+    return s;
+  };
+
+  /* ============ reference cards ============ */
+  var CARDS={
+    solidangle:{def:'An angle measured in 3D — how much of your whole view a shape fills, like the patch of sky a cloud covers.',from:'built from m² ÷ m² (area on a sphere ÷ radius²)',feel:'The entire sky around you is <b>4π ≈ 12.57 sr</b>; your thumb at arm\'s length, about 0.003 sr.'},
+    charge:{def:'The quantity of electricity itself — the total "amount of electrons" that has moved, rather than the rate.',from:'built from A × s (1 coulomb = 1 amp for 1 second)',feel:'A lightning bolt carries roughly <b>15 C</b>; one electron is a ten-billion-billionth of that.'},
+    conductance:{def:'How easily electricity flows — the exact opposite of resistance. High conductance = low resistance.',from:'the reciprocal of the ohm (1 S = 1 ÷ Ω)',feel:'A short, thick copper wire has <b>tens of siemens</b>; a good insulator, nearly zero.'},
+    capacitance:{def:'How much electric charge a component can bank up for each volt you apply — a tiny rechargeable reservoir.',from:'built from C ÷ V (coulombs stored per volt)',feel:'Everyday capacitors are <b>millionths of a farad</b> (µF). A whole 1 F capacitor is a hefty block.'},
+    magflux:{def:'The total amount of magnetic field passing through a loop or surface — add up every field line poking through.',from:'built from V × s (also tesla × m²)',feel:'Changing this flux is exactly what generates electricity in every power station and dynamo.'},
+    magfield:{def:'How strong and concentrated a magnetic field is at a point — magnetic flux packed per square metre.',from:'built from Wb ÷ m² (webers per square metre)',feel:'Earth\'s field is a faint <b>50 µT</b>; a fridge magnet ~<b>10 mT</b>; a hospital MRI a huge <b>1.5–3 T</b>.'},
+    inductance:{def:'A coil\'s stubbornness against changes in current — it resists the current speeding up or slowing down, like inertia for electricity.',from:'built from V × s ÷ A (also Wb ÷ A)',feel:'It\'s why flicking some switches makes a spark: the coil fights the sudden stop in current.'},
+    becquerel:{def:'How radioactive something is — the number of atomic nuclei that break apart (decay) each second.',from:'built from 1 ÷ s (one decay per second)',feel:'A banana is mildly radioactive at about <b>15 Bq</b>; the human body, a few thousand Bq — both harmless.'},
+    gray:{def:'How much radiation energy a kilogram of material (or tissue) soaks up. Pure physics, before any "how harmful" judgement.',from:'built from J ÷ kg (joules absorbed per kilogram)',feel:'A few grays delivered at once is a serious, whole-body radiation dose.'},
+    sievert:{def:'Absorbed radiation adjusted for how much biological harm it actually does to you — the number safety limits use.',from:'the gray, weighted by radiation type and tissue',feel:'A chest X-ray ≈ <b>0.1 mSv</b>; a banana ≈ 0.1 µSv; a yearly natural background, a few mSv.'},
+    katal:{def:'How fast a catalyst or enzyme drives a reaction — how much raw material it converts into product each second.',from:'built from mol ÷ s (moles converted per second)',feel:'Used in biochemistry and medicine to rate enzymes; one katal is actually a very brisk reaction.'}
+  };
+  function makeCard(id){
+    var m=META[id],d=CARDS[id];
+    var el=document.createElement('div');el.className='ucard';el.id=id;el.style.setProperty('--pcol','var('+m.cc+')');el.style.setProperty('--accent','var('+m.cc+')');
+    el.innerHTML='<div class="uc-top"><div class="uc-sym">'+m.sym+'</div><div><div class="uc-nm">'+m.name+'</div><div class="uc-wm">'+m.tag+'</div></div></div>'+
+      '<div class="uc-def">'+d.def+'</div><div class="uc-from">'+d.from+'</div><div class="uc-feel">'+d.feel+'</div>';
+    return el;
+  }
+
+  /* ============ assemble ============ */
+  var host=document.getElementById('book'),toc=document.getElementById('tocHost'),num=0;
+  BOOK.forEach(function(part,pi){
+    // part divider
+    var pd=document.createElement('section');pd.className='part';pd.style.setProperty('--pcol','var('+part.col+')');
+    pd.innerHTML='<div class="wrap"><div class="part-k">Part '+String(pi+1).padStart(2,'0')+'</div><h2 class="part-h">'+part.name+'</h2><p class="part-b">'+part.blurb+'</p></div>';
+    host.appendChild(pd);
+    // deep chapters
+    part.deep.forEach(function(id){var c=Object.assign({id:id},META[id]);var sec=B[id]?B[id](c):null;if(sec){num++;sec.querySelector('.ch-num').textContent='Chapter '+String(num).padStart(2,'0');host.appendChild(sec);}});
+    // cards
+    if(part.cards.length){var grid=document.createElement('section');grid.className='chapter';grid.style.borderTopStyle='dashed';
+      var gw=document.createElement('div');gw.className='wrap';gw.innerHTML='<div class="feel-h" style="margin-bottom:0">Reference cards — '+part.name+'</div>';
+      var cg=document.createElement('div');cg.className='cardgrid';part.cards.forEach(function(id){cg.appendChild(makeCard(id));});
+      gw.appendChild(cg);grid.appendChild(gw);host.appendChild(grid);}
+    // toc block
+    var tp=document.createElement('div');tp.className='toc-part';tp.style.setProperty('--pcol','var('+part.col+')');
+    var inner='<div class="pl">'+part.name+'</div><div class="toc-grid">';
+    part.deep.forEach(function(id){var m=META[id];inner+='<a class="toc-card" href="#'+id+'"><span class="sy">'+m.sym+'</span><span class="nm">'+m.name+'</span><span class="wm">'+m.wm+'</span></a>';});
+    part.cards.forEach(function(id){var m=META[id];inner+='<a class="toc-card ref" href="#'+id+'"><span class="sy">'+m.sym+'</span><span class="nm">'+m.name+'</span><span class="wm">'+m.wm+'</span></a>';});
+    inner+='</div>';tp.innerHTML=inner;toc.appendChild(tp);
+  });
+
+  /* prefix bonus */
+  (function(){
+    var rows=[{p:'nano-',s:'n',f:1e-9,ex:'a virus ≈ 100 nm wide'},{p:'micro-',s:'µ',f:1e-6,ex:'a hair ≈ 70 µm thick'},{p:'milli-',s:'m',f:1e-3,ex:'a raindrop ≈ 2 mm'},{p:'—',s:'',f:1,ex:'the base unit itself'},{p:'kilo-',s:'k',f:1e3,ex:'a 10-min walk ≈ 1 km'},{p:'mega-',s:'M',f:1e6,ex:'a photo ≈ 3 MB'},{p:'giga-',s:'G',f:1e9,ex:'Wi-Fi ≈ 2.4 GHz'},{p:'tera-',s:'T',f:1e12,ex:'a hard drive ≈ 1 TB'}];
+    var pd=document.createElement('section');pd.className='part';pd.style.setProperty('--pcol','var(--p-base)');
+    pd.innerHTML='<div class="wrap"><div class="part-k">Bonus</div><h2 class="part-h">The prefix ladder</h2><p class="part-b">The trick that ties every part together: you rarely learn new units — you bolt a prefix onto one you know. Each rung is a jump of ×1000.</p></div>';
+    host.appendChild(pd);
+    var s=document.createElement('section');s.className='chapter';s.id='prefixes';s.style.setProperty('--accent','var(--p-base)');
+    var rh=rows.map(function(r){var val=r.f>=1?'× '+commas(r.f):'÷ '+commas(Math.round(1/r.f));return '<div class="prow'+(r.f===1?' cur':'')+'"><span class="pfx">'+r.p+(r.s?' <span style="color:var(--accent)">'+r.s+'</span>':'')+'</span><span class="pval">'+val+' the base unit</span><span class="pex">'+r.ex+'</span></div>';}).join('');
+    s.innerHTML='<div class="wrap"><div class="panel" style="max-width:72ch"><p class="lead">A kilometre, a kilogram, a kilowatt and a kilobyte all mean "a thousand of the base thing." Learn the rungs once and you can read a label you\'ve never seen.</p><div class="prefix-wrap" style="margin-top:14px">'+rh+'</div></div></div>';
+    host.appendChild(s);
+    var tp=document.createElement('div');tp.className='toc-part';tp.style.setProperty('--pcol','var(--p-base)');
+    tp.innerHTML='<div class="pl">Bonus</div><div class="toc-grid"><a class="toc-card" href="#prefixes"><span class="sy">×</span><span class="nm">The prefix ladder</span><span class="wm">kilo, mega, milli…</span></a></div>';
+    toc.appendChild(tp);
+  })();
+
+  /* cover ruler */
+  (function(){
+    var g=document.getElementById('ruler-ticks');if(!g)return;
+    for(var i=0;i<=28;i++){var x=i*20,t=(i%5===0);var l=document.createElementNS(SVGNS,'line');l.setAttribute('x1',x);l.setAttribute('x2',x);l.setAttribute('y1',t?16:24);l.setAttribute('y2',38);l.setAttribute('stroke','var(--ink-faint)');l.setAttribute('stroke-width',t?1.3:0.7);l.setAttribute('opacity','0.45');g.appendChild(l);}
+    var sweep=document.getElementById('ruler-sweep');if(REDUCED||!sweep)return;
+    register(document.querySelector('.cover-ruler'),function(dt,ts){sweep.setAttribute('x',((Math.sin(ts*0.6)*0.5+0.5)*450).toFixed(1));});
+  })();
+
+  /* deep-link */
+  (function(){var h=(location.hash||'').replace('#','');if(h&&document.getElementById(h))setTimeout(function(){document.getElementById(h).scrollIntoView({block:'start'});},60);})();
+})();
+</script>
+
+</body></html>
